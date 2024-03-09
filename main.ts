@@ -111,4 +111,25 @@ namespace mintspark {
         PlanetX_Display.ledBrightness(Rjpin, false, brightness);
     }
      
+    const crashSensorEventId = 54119;
+    //% block="Crash Sensor %Rjpin pressed"
+    //% Rjpin.fieldEditor="gridpicker"
+    //% Rjpin.fieldOptions.columns=2
+    //% group="Sensor" color=#EA5532 
+    export function onCrashSensorPressed(Rjpin: PlanetX_Display.DigitalRJPin, handler: () => void) {
+        control.onEvent(crashSensorEventId, 0, handler);
+        control.inBackground(() => {
+            let lastState = PlanetX_Basic.Crash(Rjpin);
+            while (true) {
+                let isPressed = PlanetX_Basic.Crash(Rjpin);
+
+                if (isPressed && !lastState) {
+                    
+                    control.raiseEvent(crashSensorEventId, 0);
+                }
+                lastState = isPressed;
+                basic.pause(200);
+            }
+        })
+    }
 }

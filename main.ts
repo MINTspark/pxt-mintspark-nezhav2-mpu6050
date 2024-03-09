@@ -8,18 +8,21 @@ namespace mintspark {
     //% block="Set motor %motor speed to %speed\\%"
     //% group="Motor"
     //% speed.min=-100 speed.max=100
+    //% color=#E63022
     export function setMotorSpeed(motor: neZha.MotorList, speed: number): void {
         neZha.setMotorSpeed(motor, speed);
     }
 
     //% weight=86
     //% block="Stop motor %motor"
+    //% color=#E63022
     export function stopMotor(motor: neZha.MotorList): void {
         setMotorSpeed(motor, 0)
     }
 
     //% weight=85
-    //%   block="Stop all motor"
+    //% block="Stop all motor"
+    //% color=#E63022
     export function stopAllMotor(): void {
         setMotorSpeed(neZha.MotorList.M1, 0)
         setMotorSpeed(neZha.MotorList.M2, 0)
@@ -30,7 +33,7 @@ namespace mintspark {
     //% weight=84
     //% group="Servo"
     //% block="Set servo %servo angle to %angle°"
-    //% color=#E63022
+    //% color=#a3a3c2
     export function setServoAngel(servo: neZha.ServoList, angel: number): void {
         neZha.setServoAngel(neZha.ServoTypeList._360, servo, angel);
     }
@@ -62,7 +65,7 @@ namespace mintspark {
     //% block="Trimpot %Rjpin analog value"
     //% Rjpin.fieldEditor="gridpicker"
     //% Rjpin.fieldOptions.columns=2
-    //% color=#EA5532 group="Sensor"
+    //% color=#ffcc66 group="Sensor"
     export function trimpot(Rjpin: PlanetX_Display.AnalogRJPin): number {
         return PlanetX_Basic.trimpot(Rjpin);
     }
@@ -76,14 +79,14 @@ namespace mintspark {
     }
 
     //% block="Color sensor IIC port color HUE(0~360)"
-    //% group="Sensor" color=#EA5532
+    //% group="Sensor" color=#00B1ED
 
     //%export function readColor(): number {
     //%    return PlanetX_Basic.readColor();
     //%}
 
     //% block="Color sensor IIC port detects %color"
-    //% group="Sensor" color=#EA5532
+    //% group="Sensor" color=#00B1ED
     //% color.fieldEditor="gridpicker" color.fieldOptions.columns=3
     export function checkColor(color:  PlanetX_Basic.ColorList): boolean {
         return  PlanetX_Basic.checkColor(color);
@@ -105,7 +108,7 @@ namespace mintspark {
     //% Rjpin.fieldEditor="gridpicker" Rjpin.fieldOptions.columns=2
     //% brightness.min=0 brightness.max=100
     //% ledstate.shadow="toggleOnOff"
-    //% group="Output" color=#00B1ED
+    //% group="Output" color=#EA5532 
     //% expandableArgumentMode="toggle"
     export function ledBrightness(Rjpin: PlanetX_Display.DigitalRJPin, ledstate: boolean, brightness: number = 100): void {
         PlanetX_Display.ledBrightness(Rjpin, ledstate, brightness);
@@ -128,6 +131,26 @@ namespace mintspark {
                     control.raiseEvent(crashSensorEventId, 0);
                 }
                 lastState = isPressed;
+                basic.pause(200);
+            }
+        })
+    }
+
+    const colorSensorEventId = 54120;
+    //% block="Color sensor detects %color"
+    //% group="Sensor" color=#00B1ED
+    //% color.fieldEditor="gridpicker" color.fieldOptions.columns=3
+    export function onColorSensorDetectsColor(color: PlanetX_Basic.ColorList, handler: () => void) {
+        control.onEvent(colorSensorEventId, color, handler);
+        control.inBackground(() => {
+            let lastIsMatch = PlanetX_Basic.checkColor(color);
+            while (true) {
+                let isMatch = PlanetX_Basic.checkColor(color);
+
+                if (isMatch && !lastIsMatch) {
+                    control.raiseEvent(crashSensorEventId, 0);
+                }
+                lastIsMatch = isMatch;
                 basic.pause(200);
             }
         })

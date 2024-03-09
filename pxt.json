@@ -1,5 +1,5 @@
 {
-    "name": "pxt-MINTspark-elecfreaks",
+    "name": "pxt-mintspark-ik",
     "description": "",
     "dependencies": {
         "core": "*",
@@ -12,7 +12,7 @@
         "main.blocks",
         "main.ts",
         "README.md",
-        "_locales/de/pxt-MINTspark-elecfreaks-strings.json"
+        "_locales/de/pxt-mintspark-ik-strings.json"
     ],
     "testFiles": [
         "test.ts"

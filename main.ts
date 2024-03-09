@@ -141,14 +141,14 @@ namespace mintspark {
     //% group="Sensor" color=#00B1ED
     //% color.fieldEditor="gridpicker" color.fieldOptions.columns=3
     export function onColorSensorDetectsColor(color: PlanetX_Basic.ColorList, handler: () => void) {
-        control.onEvent(colorSensorEventId, color, handler);
+        control.onEvent(colorSensorEventId, 0, handler);
         control.inBackground(() => {
             let lastIsMatch = PlanetX_Basic.checkColor(color);
             while (true) {
                 let isMatch = PlanetX_Basic.checkColor(color);
 
                 if (isMatch && !lastIsMatch) {
-                    control.raiseEvent(crashSensorEventId, 0);
+                    control.raiseEvent(colorSensorEventId, 0);
                 }
                 lastIsMatch = isMatch;
                 basic.pause(200);

@@ -42,6 +42,24 @@ namespace mintspark {
      * PlanetX Sensors
      */
 
+    //% weight=110
+    //% block="Soil moisture sensor %Rjpin value(0~100)"
+    //% Rjpin.fieldEditor="gridpicker"
+    //% Rjpin.fieldOptions.columns=2
+    //% color=#ffcc66 group="Sensor"
+    export function soilHumidity(Rjpin: PlanetX_Basic.AnalogRJPin): number {
+        return PlanetX_Basic.soilHumidity(Rjpin);
+    }
+
+    //% weight=105
+    //% block="Trimpot %Rjpin analog value"
+    //% Rjpin.fieldEditor="gridpicker"
+    //% Rjpin.fieldOptions.columns=2
+    //% color=#ffcc66 group="Sensor"
+    export function trimpot(Rjpin: PlanetX_Display.AnalogRJPin): number {
+        return PlanetX_Basic.trimpot(Rjpin);
+    }
+
     //% weight=100
     //% block="Crash Sensor %Rjpin is pressed"
     //% Rjpin.fieldEditor="gridpicker"
@@ -74,42 +92,6 @@ namespace mintspark {
         })
     }
 
-    //% weight=90
-    //% block="Color sensor IIC port detects %color"
-    //% group="Sensor" color=#00B1ED
-    //% color.fieldEditor="gridpicker" color.fieldOptions.columns=3
-    export function checkColor(color: PlanetX_Basic.ColorList): boolean {
-        return PlanetX_Basic.checkColor(color);
-    }
-
-    //% weight=87
-    //% block="Color sensor IIC port color HUE(0~360)"
-    //% group="Sensor" color=#00B1ED
-    //%export function readColor(): number {
-    //%    return PlanetX_Basic.readColor();
-    //%}
-
-    //% weight=85
-    const colorSensorEventId = 54120;
-    //% block="Color sensor detects %color"
-    //% group="Sensor" color=#00B1ED
-    //% color.fieldEditor="gridpicker" color.fieldOptions.columns=3
-    export function onColorSensorDetectsColor(color: PlanetX_Basic.ColorList, handler: () => void) {
-        control.onEvent(colorSensorEventId, 0, handler);
-        control.inBackground(() => {
-            let lastIsMatch = PlanetX_Basic.checkColor(color);
-            while (true) {
-                let isMatch = PlanetX_Basic.checkColor(color);
-
-                if (isMatch && !lastIsMatch) {
-                    control.raiseEvent(colorSensorEventId, 0);
-                }
-                lastIsMatch = isMatch;
-                basic.pause(200);
-            }
-        })
-    }
-
     //% weight=80
     //% block="Ultrasonic sensor %Rjpin distance %distance_unit"
     //% group="Sensor"
@@ -132,22 +114,40 @@ namespace mintspark {
         return PlanetX_Basic.trackingSensor(Rjpin, state);
     }
 
-    //% weight=70
-    //% block="Trimpot %Rjpin analog value"
-    //% Rjpin.fieldEditor="gridpicker"
-    //% Rjpin.fieldOptions.columns=2
-    //% color=#ffcc66 group="Sensor"
-    export function trimpot(Rjpin: PlanetX_Display.AnalogRJPin): number {
-        return PlanetX_Basic.trimpot(Rjpin);
+    //% weight=55
+    //% block="Color sensor IIC port detects %color"
+    //% group="Sensor" color=#00B1ED
+    //% color.fieldEditor="gridpicker" color.fieldOptions.columns=3
+    export function checkColor(color: PlanetX_Basic.ColorList): boolean {
+        return PlanetX_Basic.checkColor(color);
     }
 
-    //% weight=65
-    //% block="Soil moisture sensor %Rjpin value(0~100)"
-    //% Rjpin.fieldEditor="gridpicker"
-    //% Rjpin.fieldOptions.columns=2
-    //% color=#EA5532 group="Sensor"
-    export function soilHumidity(Rjpin: PlanetX_Basic.AnalogRJPin): number {
-        return PlanetX_Basic.soilHumidity(Rjpin);
+    //% weight=50
+    //% block="Color sensor IIC port color HUE(0~360)"
+    //% group="Sensor" color=#00B1ED
+    //%export function readColor(): number {
+    //%    return PlanetX_Basic.readColor();
+    //%}
+
+    const colorSensorEventId = 54120;
+    //% weight=45
+    //% block="Color sensor detects %color"
+    //% group="Sensor" color=#00B1ED
+    //% color.fieldEditor="gridpicker" color.fieldOptions.columns=3
+    export function onColorSensorDetectsColor(color: PlanetX_Basic.ColorList, handler: () => void) {
+        control.onEvent(colorSensorEventId, 0, handler);
+        control.inBackground(() => {
+            let lastIsMatch = PlanetX_Basic.checkColor(color);
+            while (true) {
+                let isMatch = PlanetX_Basic.checkColor(color);
+
+                if (isMatch && !lastIsMatch) {
+                    control.raiseEvent(colorSensorEventId, 0);
+                }
+                lastIsMatch = isMatch;
+                basic.pause(200);
+            }
+        })
     }
 
     /*

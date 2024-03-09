@@ -108,7 +108,7 @@ namespace mintspark {
     //% group="Output" color=#00B1ED
     //% expandableArgumentMode="toggle"
     export function ledBrightness(Rjpin: PlanetX_Display.DigitalRJPin, ledstate: boolean, brightness: number = 100): void {
-        PlanetX_Display.ledBrightness(Rjpin, false, brightness);
+        PlanetX_Display.ledBrightness(Rjpin, ledstate, brightness);
     }
      
     const crashSensorEventId = 54119;

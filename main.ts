@@ -104,6 +104,30 @@ namespace mintspark {
     export function ultrasoundSensor(Rjpin: PlanetX_Basic.DigitalRJPin, distance_unit: PlanetX_Basic.Distance_Unit_List): number {
         return PlanetX_Basic.ultrasoundSensor(Rjpin, distance_unit);
     }
+
+    const ultrasonicSensorEventId = 54121;
+    //% weight=78
+    //% block="Ultrasonic Sensor %Rjpin triggered"
+    //% Rjpin.fieldEditor="gridpicker"
+    //% Rjpin.fieldOptions.columns=2
+    //% group="Sensor" color=#EA5532 
+    export function onUltrasonicSensorTriggered(Rjpin: PlanetX_Display.DigitalRJPin, handler: () => void) {
+        control.onEvent(ultrasonicSensorEventId, 0, handler);
+        control.inBackground(() => {
+            let lastState = false;
+            while (true) {
+                let distance = PlanetX_Basic.ultrasoundSensor(Rjpin, PlanetX_Basic.Distance_Unit_List.Distance_Unit_cm);
+                let detected = distance > 0 && distance < 6;
+
+                if (detected && !lastState) {
+                    control.raiseEvent(ultrasonicSensorEventId, 0);
+                }
+
+                lastState = detected;
+                basic.pause(200);
+            }
+        })
+    }
     
     //% weight=75
     //% Rjpin.fieldEditor="gridpicker"

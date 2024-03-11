@@ -2,6 +2,7 @@
     "mintspark.setMotorSpeed|block": "Setze motor %motor Geschwindigkeit auf %speed\\%",
     "mintspark.stopMotor|block": "Stoppe Motor %motor",
     "mintspark.stopAllMotor|block": "Stoppe alle Motoren",
+    "mintspark.setServoAngel|block": "Bewege Servo %servo zu Winkel %angle°",
     "mintspark.ultrasoundSensor|block": "Drehe Servo %servo auf Winkel %angle°",
     "mintspark.trackingSensor|block": "Linenverfolgungs-Sensor %Rjpin sieht %state",
     "mintspark.trimpot|block": "Trimpot %Rjpin analog Wert",

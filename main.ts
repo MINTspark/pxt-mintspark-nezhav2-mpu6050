@@ -6,6 +6,7 @@ namespace mintspark {
 
     //% weight=100
     //% block="Set motor %motor speed to %speed\\%"
+    //% subcategory="Motor / Servo"
     //% group="Motor"
     //% speed.min=-100 speed.max=100
     //% color=#E63022
@@ -14,6 +15,8 @@ namespace mintspark {
     }
 
     //% weight=95
+    //% subcategory="Motor / Servo"
+    //% group="Motor"
     //% block="Stop motor %motor"
     //% color=#E63022
     export function stopMotor(motor: neZha.MotorList): void {
@@ -21,6 +24,8 @@ namespace mintspark {
     }
 
     //% weight=90
+    //% subcategory="Motor / Servo"
+    //% group="Motor"
     //% block="Stop all motor"
     //% color=#E63022
     export function stopAllMotor(): void {
@@ -31,6 +36,7 @@ namespace mintspark {
     }
 
     //% weight=85
+    //% subcategory="Motor / Servo"
     //% group="Servo"
     //% block="Set servo %servo angle to %angle°"
     //% color=#a3a3c2
@@ -44,38 +50,46 @@ namespace mintspark {
      */
 
     //% weight=110
+    //% subcategory="Sensor / Input"
+    //% group="Sensor"
     //% block="Soil moisture sensor %Rjpin value(0~100)"
     //% Rjpin.fieldEditor="gridpicker"
     //% Rjpin.fieldOptions.columns=2
-    //% color=#ffcc66 group="Sensor"
+    //% color=#ffcc66
     export function soilHumidity(Rjpin: PlanetX_Basic.AnalogRJPin): number {
         return PlanetX_Basic.soilHumidity(Rjpin);
     }
 
     //% weight=105
+    //% subcategory="Sensor / Input"
+    //% group="Input"
     //% block="Trimpot %Rjpin analog value"
     //% Rjpin.fieldEditor="gridpicker"
     //% Rjpin.fieldOptions.columns=2
-    //% color=#ffcc66 group="Sensor"
+    //% color=#ffcc66
     export function trimpot(Rjpin: PlanetX_Display.AnalogRJPin): number {
         return PlanetX_Basic.trimpot(Rjpin);
     }
 
     //% weight=100
+    //% subcategory="Sensor / Input"
+    //% group="Input"
     //% block="Crash Sensor %Rjpin is pressed"
     //% Rjpin.fieldEditor="gridpicker"
     //% Rjpin.fieldOptions.columns=2
-    //% group="Sensor" color=#EA5532 
+    //% color=#EA5532 
     export function Crash(Rjpin: PlanetX_Display.DigitalRJPin): boolean {
         return PlanetX_Basic.Crash(Rjpin);
     }
 
     const crashSensorEventId = 54119;
     //% weight=95
+    //% subcategory="Sensor / Input"
+    //% group="Input"
     //% block="Crash Sensor %Rjpin pressed"
     //% Rjpin.fieldEditor="gridpicker"
     //% Rjpin.fieldOptions.columns=2
-    //% group="Sensor" color=#EA5532 
+    //% color=#EA5532 
     export function onCrashSensorPressed(Rjpin: PlanetX_Display.DigitalRJPin, handler: () => void) {
         control.onEvent(crashSensorEventId, 0, handler);
         control.inBackground(() => {
@@ -95,6 +109,7 @@ namespace mintspark {
 
     //% weight=80
     //% block="Ultrasonic sensor %Rjpin distance %distance_unit"
+    //% subcategory="Sensor / Input"
     //% group="Sensor"
     //% Rjpin.fieldEditor="gridpicker"
     //% Rjpin.fieldOptions.columns=2
@@ -107,10 +122,11 @@ namespace mintspark {
 
     const ultrasonicSensorEventId = 54121;
     //% weight=78
+    //% subcategory="Sensor / Input"
+    //% group="Sensor"
     //% block="Ultrasonic Sensor %Rjpin triggered"
     //% Rjpin.fieldEditor="gridpicker"
     //% Rjpin.fieldOptions.columns=2
-    //% group="Sensor" color=#EA5532 
     export function onUltrasonicSensorTriggered(Rjpin: PlanetX_Display.DigitalRJPin, handler: () => void) {
         control.onEvent(ultrasonicSensorEventId, 0, handler);
         control.inBackground(() => {
@@ -130,9 +146,10 @@ namespace mintspark {
     }
     
     //% weight=75
+    //% subcategory="Sensor / Input"
+    //% group="Sensor"
     //% Rjpin.fieldEditor="gridpicker"
     //% Rjpin.fieldOptions.columns=2
-    //% group="Sensor"
     //% color=#EA5532
     //% block="Line-tracking sensor %Rjpin is %state"
     export function trackingSensor(Rjpin: PlanetX_Basic.DigitalRJPin, state: PlanetX_Basic.TrackingStateType): boolean {
@@ -140,24 +157,30 @@ namespace mintspark {
     }
 
     //% weight=55
+    //% subcategory="Sensor / Input"
+    //% group="Sensor"
     //% block="Color sensor IIC port detects %color"
-    //% group="Sensor" color=#00B1ED
+    //% color=#00B1ED
     //% color.fieldEditor="gridpicker" color.fieldOptions.columns=3
     export function checkColor(color: PlanetX_Basic.ColorList): boolean {
         return PlanetX_Basic.checkColor(color);
     }
 
     //% weight=50
+    //% subcategory="Sensor / Input"
+    //% group="Sensor"
     //% block="Color sensor IIC port color HUE(0~360)"
-    //% group="Sensor" color=#00B1ED
+    //% color=#00B1ED
     //%export function readColor(): number {
     //%    return PlanetX_Basic.readColor();
     //%}
 
     const colorSensorEventId = 54120;
     //% weight=45
+    //% subcategory="Sensor / Input"
+    //% group="Sensor"
     //% block="Color sensor detects %color"
-    //% group="Sensor" color=#00B1ED
+    //% color=#00B1ED
     //% color.fieldEditor="gridpicker" color.fieldOptions.columns=3
     export function onColorSensorDetectsColor(color: PlanetX_Basic.ColorList, handler: () => void) {
         control.onEvent(colorSensorEventId, 0, handler);
@@ -179,13 +202,42 @@ namespace mintspark {
      * PlanetX Output
      */
 
+    //% subcategory="Light / Display"
+    //% group="Light"
     //% block="LED %Rjpin toggle to $ledstate || brightness %brightness \\%"
     //% Rjpin.fieldEditor="gridpicker" Rjpin.fieldOptions.columns=2
     //% brightness.min=0 brightness.max=100
     //% ledstate.shadow="toggleOnOff"
-    //% group="Output" color=#EA5532 
+    //% color=#EA5532 
     //% expandableArgumentMode="toggle"
     export function ledBrightness(Rjpin: PlanetX_Display.DigitalRJPin, ledstate: boolean, brightness: number = 100): void {
         PlanetX_Display.ledBrightness(Rjpin, ledstate, brightness);
+    }
+
+    //% subcategory="Light / Display"
+    //% group="Display"
+    //% line.min=1 line.max=8 line.defl=1
+    //% text.defl="Hello!"
+    //% block="OLED show line %line|text %text"
+    //% color=#00B1ED
+    export function showUserText(line: number, text: string) {
+        PlanetX_Display.showUserText(line, text);
+    }
+
+    //% subcategory="Light / Display"
+    //% group="Display"
+    //% line.min=1 line.max=8 line.defl=1 
+    //% n.defl=1234
+    //% block="OLED show line %line|number %n"
+    //% color=#00B1ED
+    export function showUserNumber(line: number, n: number) {
+        PlanetX_Display.showUserNumber(line, n);
+    }
+
+    //% subcategory="Light / Display"
+    //% group="Display"
+    //% block="clear display" color=#00B1ED
+    export function oledClear() {
+        PlanetX_Display.oledClear();
     }
 }

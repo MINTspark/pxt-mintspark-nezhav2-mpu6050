@@ -14,7 +14,17 @@
     "mintspark.Crash|block": "Crash Sensor %Rjpin ist gedrückt",
     "mintspark.onCrashSensorPressed|block": "Crash Sensor %Rjpin gedrückt",
     "mintspark.ledBrightness|block": "Schalte LED %Rjpin auf $ledstate || Helligkeit %brightness \\%",
-    "{id:category}Motor": "Motor",
-    "{id:category}Servo": "Servo",
-    "{id:category}Output": "Ausgabe"
+    "mintspark.oledShowText|block": "Display: Zeige Text %text auf Zeile %line",
+    "mintspark.oledShowNumber|block": "Display: Zeige Nummer %n auf Zeile %line",
+    "mintspark.oledClear|block": "Display löschen",
+    "{id:subcategory}Motor / Servo": "Motor / Servo",
+    "{id:subcategory}Sensor / Input": "Sensor / Eingabe",
+    "{id:subcategory}Light / Display": "Licht / Display",
+    "{id:group}Motor": "Motor",
+    "{id:group}Servo": "Servo",
+    "{id:group}Output": "Ausgabe",
+    "{id:group}Input": "Eingabe",
+    "{id:group}Sensor": "Sensor",
+    "{id:group}Light": "Licht",
+    "{id:group}Display": "Display"
 }

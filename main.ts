@@ -1,4 +1,4 @@
-//% weight=100 color=#DC22E1 block="MINTspark Elecfreaks" blockId="MINTspark Elecfreaks" icon="\uf0e7"
+//% weight=100 color=#DC22E1 block="MINTspark Inventor" blockId="MINTspark Inventor" icon="\uf0e7"
 namespace mintspark {
     /*
      * NeZha
@@ -218,9 +218,9 @@ namespace mintspark {
     //% group="Display"
     //% line.min=1 line.max=8 line.defl=1
     //% text.defl="Hello!"
-    //% block="OLED show line %line|text %text"
+    //% block="Display: Show text %text on line %line"
     //% color=#00B1ED
-    export function showUserText(line: number, text: string) {
+    export function oledShowText(text: string, line: number) {
         PlanetX_Display.showUserText(line, text);
     }
 
@@ -228,9 +228,9 @@ namespace mintspark {
     //% group="Display"
     //% line.min=1 line.max=8 line.defl=1 
     //% n.defl=1234
-    //% block="OLED show line %line|number %n"
+    //% block="Display: Show number %n on line %line"
     //% color=#00B1ED
-    export function showUserNumber(line: number, n: number) {
+    export function oledShowNumber(n: number, line: number) {
         PlanetX_Display.showUserNumber(line, n);
     }
 

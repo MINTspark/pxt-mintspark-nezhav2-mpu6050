@@ -11,6 +11,18 @@ namespace mintspark {
     //% speed.min=-100 speed.max=100
     //% color=#E63022
     export function setMotorSpeed(motor: neZha.MotorList, speed: number): void {
+        if (speed == 0) 
+        {
+            return;
+        }
+        else if (speed < 0 && speed > -10)
+        {
+            speed = -10;
+        }
+        else if (speed > 0 && speed < 10) {
+            speed = 10;
+        }
+
         neZha.setMotorSpeed(motor, speed);
     }
 
@@ -33,6 +45,28 @@ namespace mintspark {
         setMotorSpeed(neZha.MotorList.M2, 0)
         setMotorSpeed(neZha.MotorList.M3, 0)
         setMotorSpeed(neZha.MotorList.M4, 0)
+    }
+
+    //% weight=100
+    //% block="Drive motor %motor1 and motor %motor2 at speed %speed\\% || seconds %seconds"
+    //% subcategory="Motor / Servo"
+    //% group="Tank Mode"
+    //% speed.min=-100 speed.max=100
+    //% seconds.min=1 seconds.defl=1
+    //% motor1.defl=neZha.MotorList.M1
+    //% motor2.defl=neZha.MotorList.M2
+    //% expandableArgumentMode="toggle"
+    //% inlineInputMode=inline
+    //% color=#E63022
+    export function setTwoMotorSpeed(motor1: neZha.MotorList, motor2: neZha.MotorList, speed: number, seconds: number = 0): void {
+        setMotorSpeed(motor1, speed);
+        setMotorSpeed(motor2, speed);
+
+        if (seconds > 0)
+        {
+            basic.pause(seconds * 1000);
+            stopAllMotor();
+        }
     }
 
     //% weight=85

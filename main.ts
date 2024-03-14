@@ -59,8 +59,8 @@ namespace mintspark {
         Right
     }
 
-    //% weight=100
-    //% block="Set tankmode motor left to %motor reverse %reverse"
+    //% weight=50
+    //% block="Set motor left to %motor reverse %reverse"
     //% subcategory="Motor / Servo"
     //% group="Tank Mode"
     //% motor.defl=neZha.MotorList.M1
@@ -71,8 +71,8 @@ namespace mintspark {
         tankMotorLeftReversed = reverse;
     }
 
-    //% weight=95
-    //% block="Set tankmode motor right to %motor reverse %reverse"
+    //% weight=45
+    //% block="Set motor right to %motor reverse %reverse"
     //% subcategory="Motor / Servo"
     //% group="Tank Mode"
     //% motor.defl=neZha.MotorList.M2
@@ -83,8 +83,8 @@ namespace mintspark {
         tankMotorRightReversed = reverse;
     }
 
-    //% weight=90
-    //% block="Tankmode drive straight speed %speed\\% || seconds %seconds"
+    //% weight=40
+    //% block="Drive straight speed %speed\\% || seconds %seconds"
     //% subcategory="Motor / Servo"
     //% group="Tank Mode"
     //% speed.min=-100 speed.max=100
@@ -105,8 +105,8 @@ namespace mintspark {
         }
     }
 
-    //% weight=89
-    //% block="Tankmode left motor speed %speedLeft\\% right motor %speedRight\\% || seconds %seconds"
+    //% weight=35
+    //% block="Drive left motor %speedLeft\\% right motor %speedRight\\% || seconds %seconds"
     //% subcategory="Motor / Servo"
     //% group="Tank Mode"
     //% speedLeft.min=-100 speedLeft.max=100
@@ -127,8 +127,8 @@ namespace mintspark {
         }
     }
 
-    //% weight=85
-    //% block="Tankmode spot-turn %direction at speed %speed\\% for %milliSeconds ms"
+    //% weight=30
+    //% block="Spot-turn %direction at speed %speed\\% for %milliSeconds ms"
     //% subcategory="Motor / Servo"
     //% group="Tank Mode"
     //% speed.min=10 speed.max=100
@@ -145,7 +145,7 @@ namespace mintspark {
         setMotorSpeed(tankMotorLeft, 0);
     }
 
-    //% weight=85
+    //% weight=80
     //% subcategory="Motor / Servo"
     //% group="Servo"
     //% block="Set servo %servo angle to %angle°"

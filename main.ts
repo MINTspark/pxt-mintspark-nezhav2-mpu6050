@@ -11,16 +11,12 @@ namespace mintspark {
     //% speed.min=-100 speed.max=100
     //% color=#E63022
     export function setMotorSpeed(motor: neZha.MotorList, speed: number): void {
-        if (speed == 0) 
+        if (speed < 0 && speed > -11)
         {
-            return;
+            speed = -11;
         }
-        else if (speed < 0 && speed > -10)
-        {
-            speed = -10;
-        }
-        else if (speed > 0 && speed < 10) {
-            speed = 10;
+        else if (speed > 0 && speed < 11) {
+            speed = 11;
         }
 
         neZha.setMotorSpeed(motor, speed);
@@ -47,26 +43,106 @@ namespace mintspark {
         setMotorSpeed(neZha.MotorList.M4, 0)
     }
 
+    /*
+     * Tank Mode
+     */
+
+    let tankMotorOne: neZha.MotorList = neZha.MotorList.M1;
+    let tankMotorOneReversed: boolean = false;
+    let tankMotorTwo: neZha.MotorList = neZha.MotorList.M2;
+    let tankMotorTwoReversed: boolean = false;
+
+    export enum TurnDirection {
+        //% block="left"
+        Left,
+        //% block="right"
+        Right
+    }
+
     //% weight=100
-    //% block="Drive motor %motor1 and motor %motor2 at speed %speed\\% || seconds %seconds"
+    //% block="Set Tankmode motor 1 to %motor reverse %reverse"
+    //% subcategory="Motor / Servo"
+    //% group="Tank Mode"
+    //% motor.defl=neZha.MotorList.M1
+    //% reverse.shadow="toggleYesNo"
+    //% color=#E63022
+    export function setTankMotorOne(motor: neZha.MotorList, reverse: boolean): void {
+        tankMotorOne = motor;
+        tankMotorOneReversed = reverse;
+    }
+
+    //% weight=95
+    //% block="Set Tankmode motor 2 to %motor reverse %reverse"
+    //% subcategory="Motor / Servo"
+    //% group="Tank Mode"
+    //% motor.defl=neZha.MotorList.M2
+    //% reverse.shadow="toggleYesNo"
+    //% color=#E63022
+    export function setTankMotorTwo(motor: neZha.MotorList, reverse: boolean): void {
+        tankMotorTwo = motor;
+        tankMotorTwoReversed = reverse;
+    }
+
+    //% weight=90
+    //% block="Tankmode drive straight speed %speed\\% || seconds %seconds"
     //% subcategory="Motor / Servo"
     //% group="Tank Mode"
     //% speed.min=-100 speed.max=100
-    //% seconds.min=1 seconds.defl=1
-    //% motor1.defl=neZha.MotorList.M1
-    //% motor2.defl=neZha.MotorList.M2
     //% expandableArgumentMode="toggle"
     //% inlineInputMode=inline
     //% color=#E63022
-    export function setTwoMotorSpeed(motor1: neZha.MotorList, motor2: neZha.MotorList, speed: number, seconds: number = 0): void {
-        setMotorSpeed(motor1, speed);
-        setMotorSpeed(motor2, speed);
+    export function driveTankModeSingleSpeed(speed: number, seconds?: number): void {
+        let tm1Speed = tankMotorOneReversed ? -speed : speed;
+        let tm2Speed = tankMotorTwoReversed ? -speed : speed;
+        setMotorSpeed(tankMotorOne, tm1Speed);
+        setMotorSpeed(tankMotorTwo, tm2Speed);
 
-        if (seconds > 0)
+        if (seconds != null)
         {
             basic.pause(seconds * 1000);
-            stopAllMotor();
+            setMotorSpeed(tankMotorTwo, 0);
+            setMotorSpeed(tankMotorOne, 0);
         }
+    }
+
+    //% weight=89
+    //% block="Tankmode left motor speed %speedLeft\\% right motor %speedRight\\% || seconds %seconds"
+    //% subcategory="Motor / Servo"
+    //% group="Tank Mode"
+    //% speedLeft.min=-100 speedLeft.max=100
+    //% speedRight.min=-100 speedRight.max=100
+    //% expandableArgumentMode="toggle"
+    //% inlineInputMode=inline
+    //% color=#E63022
+    export function driveTankModeDualSpeed(speedLeft: number, speedRight: number, seconds?: number): void {
+        let tmLSpeed = tankMotorOneReversed ? -speedLeft : speedLeft;
+        let tmRSpeed = tankMotorTwoReversed ? -speedRight : speedRight;
+        setMotorSpeed(tankMotorOne, tmLSpeed);
+        setMotorSpeed(tankMotorTwo, tmRSpeed);
+
+        if (seconds != null) {
+            basic.pause(seconds * 1000);
+            setMotorSpeed(tankMotorTwo, 0);
+            setMotorSpeed(tankMotorOne, 0);
+        }
+    }
+
+    //% weight=85
+    //% block="Tankmode spot-turn %direction at speed %speed\\% for %milliSeconds ms"
+    //% subcategory="Motor / Servo"
+    //% group="Tank Mode"
+    //% speed.min=10 speed.max=100
+    //% inlineInputMode=inline
+    //% color=#E63022
+    export function turnTankMode(direction: TurnDirection, speed: number, milliSeconds: number): void {
+        let tmLSpeed = tankMotorOneReversed ? -speed : speed;
+        let tmRSpeed = tankMotorTwoReversed ? -speed : speed;
+        if (direction == TurnDirection.Right) tmRSpeed = -tmRSpeed; else tmLSpeed = -tmLSpeed;
+        setMotorSpeed(tankMotorOne, tmLSpeed);
+        setMotorSpeed(tankMotorTwo, tmRSpeed);
+        basic.pause(milliSeconds);
+        setMotorSpeed(tankMotorTwo, 0);
+        setMotorSpeed(tankMotorOne, 0);
     }
 
     //% weight=85

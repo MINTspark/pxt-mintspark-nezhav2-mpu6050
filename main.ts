@@ -61,7 +61,7 @@ namespace mintspark {
 
     //% weight=50
     //% block="Set motor left to %motor reverse %reverse"
-    //% subcategory="Motor / Servo"
+    //% subcategory="Tank Mode"
     //% group="Tank Mode"
     //% motor.defl=neZha.MotorList.M1
     //% reverse.shadow="toggleYesNo"
@@ -73,7 +73,7 @@ namespace mintspark {
 
     //% weight=45
     //% block="Set motor right to %motor reverse %reverse"
-    //% subcategory="Motor / Servo"
+    //% subcategory="Tank Mode"
     //% group="Tank Mode"
     //% motor.defl=neZha.MotorList.M2
     //% reverse.shadow="toggleYesNo"
@@ -85,7 +85,7 @@ namespace mintspark {
 
     //% weight=40
     //% block="Drive straight speed %speed\\% || seconds %seconds"
-    //% subcategory="Motor / Servo"
+    //% subcategory="Tank Mode"
     //% group="Tank Mode"
     //% speed.min=-100 speed.max=100
     //% expandableArgumentMode="toggle"
@@ -107,7 +107,7 @@ namespace mintspark {
 
     //% weight=35
     //% block="Drive left motor %speedLeft\\% right motor %speedRight\\% || seconds %seconds"
-    //% subcategory="Motor / Servo"
+    //% subcategory="Tank Mode"
     //% group="Tank Mode"
     //% speedLeft.min=-100 speedLeft.max=100
     //% speedRight.min=-100 speedRight.max=100
@@ -129,7 +129,7 @@ namespace mintspark {
 
     //% weight=30
     //% block="Spot-turn %direction at speed %speed\\% for %milliSeconds ms"
-    //% subcategory="Motor / Servo"
+    //% subcategory="Tank Mode"
     //% group="Tank Mode"
     //% speed.min=10 speed.max=100
     //% inlineInputMode=inline

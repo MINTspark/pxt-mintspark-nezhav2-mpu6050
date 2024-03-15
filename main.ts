@@ -144,7 +144,12 @@ namespace mintspark {
     export function turnTankMode(direction: TurnDirection, speed: number, milliSeconds: number): void {
         let tmLSpeed = tankMotorLeftReversed ? -speed : speed;
         let tmRSpeed = tankMotorRightReversed ? -speed : speed;
-        if (direction == TurnDirection.Right) tmRSpeed = -tmRSpeed; else tmLSpeed = -tmLSpeed;
+
+        if (direction == TurnDirection.Right) 
+        {tmRSpeed = -tmRSpeed;}
+        else
+        { tmLSpeed = -tmLSpeed;}
+        
         setMotorSpeed(tankMotorLeft, tmLSpeed);
         setMotorSpeed(tankMotorRight, tmRSpeed);
         basic.pause(milliSeconds);

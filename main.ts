@@ -73,7 +73,7 @@ namespace mintspark {
     //% motor.defl=neZha.MotorList.M1
     //% reverse.shadow="toggleYesNo"
     //% color=#E63022
-    export function settankMotorLeft(motor: neZha.MotorList, reverse: boolean): void {
+    export function setTankMotorLeft(motor: neZha.MotorList, reverse: boolean): void {
         tankMotorLeft = motor;
         tankMotorLeftReversed = reverse;
     }

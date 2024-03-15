@@ -3,14 +3,16 @@ namespace mintspark {
     /*
      * NeZha
      */
-
+    
     //% weight=100
-    //% block="Set motor %motor speed to %speed\\%"
+    //% block="Set motor %motor speed to %speed\\% || seconds %seconds"
     //% subcategory="Motor / Servo"
     //% group="Motor"
     //% speed.min=-100 speed.max=100
+    //% expandableArgumentMode="toggle"
+    //% inlineInputMode=inline
     //% color=#E63022
-    export function setMotorSpeed(motor: neZha.MotorList, speed: number): void {
+    export function setMotorSpeed(motor: neZha.MotorList, speed: number, seconds?: number): void {
         if (speed < 0 && speed > -11)
         {
             speed = -11;
@@ -20,6 +22,11 @@ namespace mintspark {
         }
 
         neZha.setMotorSpeed(motor, speed);
+
+        if (seconds != null) {
+            basic.pause(seconds * 1000);
+            setMotorSpeed(motor, 0);
+        }
     }
 
     //% weight=95

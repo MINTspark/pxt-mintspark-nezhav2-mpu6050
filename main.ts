@@ -3,6 +3,16 @@ namespace mintspark {
     /*
      * NeZha
      */
+
+    let maxSpeed = 30;
+    let minSpeed = 12;
+    function restrictSpeed(speed: number):number{
+        if (speed > maxSpeed) { speed = maxSpeed; }
+        if (speed < -maxSpeed) { speed = -maxSpeed; }
+        if (speed < 0 && speed > -minSpeed) { speed = -minSpeed; }
+        if (speed > 0 && speed < minSpeed) { speed = minSpeed; }
+        return speed;
+    }
     
     //% weight=100
     //% block="Set motor %motor speed to %speed\\% || seconds %seconds"
@@ -13,19 +23,12 @@ namespace mintspark {
     //% inlineInputMode=inline
     //% color=#E63022
     export function setMotorSpeed(motor: neZha.MotorList, speed: number, seconds?: number): void {
-        if (speed < 0 && speed > -11)
-        {
-            speed = -11;
-        }
-        else if (speed > 0 && speed < 11) {
-            speed = 11;
-        }
-
+        speed = restrictSpeed(speed);
         neZha.setMotorSpeed(motor, speed);
 
         if (seconds != null) {
             basic.pause(seconds * 1000);
-            setMotorSpeed(motor, 0);
+            neZha.setMotorSpeed(motor, 0);
         }
     }
 
@@ -99,6 +102,7 @@ namespace mintspark {
     //% inlineInputMode=inline
     //% color=#E63022
     export function driveTankModeSingleSpeed(speed: number, seconds?: number): void {
+        speed = restrictSpeed(speed);
         let tm1Speed = tankMotorLeftReversed ? -speed : speed;
         let tm2Speed = tankMotorRightReversed ? -speed : speed;
         setMotorSpeed(tankMotorLeft, tm1Speed);
@@ -122,6 +126,8 @@ namespace mintspark {
     //% inlineInputMode=inline
     //% color=#E63022
     export function driveTankModeDualSpeed(speedLeft: number, speedRight: number, seconds?: number): void {
+        speedLeft = restrictSpeed(speedLeft);
+        speedRight = restrictSpeed(speedRight);
         let tmLSpeed = tankMotorLeftReversed ? -speedLeft : speedLeft;
         let tmRSpeed = tankMotorRightReversed ? -speedRight : speedRight;
         setMotorSpeed(tankMotorLeft, tmLSpeed);
@@ -142,6 +148,7 @@ namespace mintspark {
     //% inlineInputMode=inline
     //% color=#E63022
     export function turnTankMode(direction: TurnDirection, speed: number, milliSeconds: number): void {
+        speed = restrictSpeed(speed);
         let tmLSpeed = tankMotorLeftReversed ? -speed : speed;
         let tmRSpeed = tankMotorRightReversed ? -speed : speed;
         if (direction == TurnDirection.Right) { tmRSpeed = -tmRSpeed; } else { tmLSpeed = -tmLSpeed; }

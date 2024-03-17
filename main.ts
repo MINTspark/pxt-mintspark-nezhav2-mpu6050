@@ -7,11 +7,17 @@ namespace mintspark {
     let maxSpeed = 25;
     let minSpeed = 12;
     function restrictSpeed(speed: number):number{
-        if (speed > maxSpeed) { speed = maxSpeed; }
-        if (speed < -maxSpeed) { speed = -maxSpeed; }
-        if (speed < 0 && speed > -minSpeed) { speed = -minSpeed; }
-        if (speed > 0 && speed < minSpeed) { speed = minSpeed; }
-        return speed;
+        if (speed > 100) { speed = 100 };
+        if (speed < -100) { speed = -100 };
+
+        if (speed < 0)
+        { 
+            if (speed > -minSpeed) { return -minSpeed; }
+            return Math.map(speed, -minSpeed, -100, -minSpeed, -maxSpeed);
+        }
+
+        if (speed < minSpeed) { return minSpeed; }
+        return Math.map(speed, minSpeed, 100, minSpeed, maxSpeed);
     }
     
     //% weight=100

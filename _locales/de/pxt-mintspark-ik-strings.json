@@ -1,7 +1,7 @@
 {
     "mintspark.TurnDirection.Left|block": "Links",
     "mintspark.TurnDirection.Right|block": "Rechts",
-    "mintspark.setMotorSpeed|block": "Setze motor %motor Geschwindigkeit auf %speed\\% || seconds %seconds",
+    "mintspark.setMotorSpeed|block": "Setze motor %motor Geschwindigkeit auf %speed\\% || Sekunden %seconds",
     "mintspark.stopMotor|block": "Stoppe Motor %motor",
     "mintspark.stopAllMotor|block": "Stoppe alle Motoren",
     "mintspark.setServoAngel|block": "Drehe Servo %servo auf Winkel %angle°",

@@ -166,8 +166,13 @@ namespace mintspark {
     //% block="Set servo %servo angle to %angle°"
     //% color=#a3a3c2
     //% angel.min=0 angel.max=360
-    export function setServoAngel(servo: neZha.ServoList, angel: number): void {
-        neZha.setServoAngel(neZha.ServoTypeList._360, servo, angel);
+    export function setServoAngel(servo: neZha.ServoList, angle: number): void {
+        if (angle > 360 || angle < 0)
+        {
+            return;
+        }
+        
+        neZha.setServoAngel(neZha.ServoTypeList._360, servo, angle);
     }
 
     /*

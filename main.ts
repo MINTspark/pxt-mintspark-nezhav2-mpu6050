@@ -4,7 +4,7 @@ namespace mintspark {
      * NeZha
      */
 
-    let maxSpeed = 30;
+    let maxSpeed = 25;
     let minSpeed = 12;
     function restrictSpeed(speed: number):number{
         if (speed > maxSpeed) { speed = maxSpeed; }

@@ -16,8 +16,13 @@ namespace mintspark {
             return Math.map(speed, -minSpeed, -100, -minSpeed, -maxSpeed);
         }
 
-        if (speed < minSpeed) { return minSpeed; }
-        return Math.map(speed, minSpeed, 100, minSpeed, maxSpeed);
+        if (speed > 0) 
+        {
+            if (speed < minSpeed) { return minSpeed; }
+            return Math.map(speed, minSpeed, 100, minSpeed, maxSpeed);
+        }
+
+        return 0;
     }
     
     //% weight=100

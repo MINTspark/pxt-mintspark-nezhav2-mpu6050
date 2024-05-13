@@ -248,6 +248,8 @@ namespace mintspark {
         })
     }
 
+    let lastUltrasoundSensorReading = 50;
+
     //% weight=80
     //% block="Ultrasonic sensor %Rjpin distance %distance_unit"
     //% subcategory="Sensor / Input"
@@ -258,7 +260,15 @@ namespace mintspark {
     //% distance_unit.fieldOptions.columns=2
     //% color=#EA5532
     export function ultrasoundSensor(Rjpin: PlanetX_Basic.DigitalRJPin, distance_unit: PlanetX_Basic.Distance_Unit_List): number {
-        return PlanetX_Basic.ultrasoundSensor(Rjpin, distance_unit);
+        let distance = PlanetX_Basic.ultrasoundSensor(Rjpin, distance_unit);
+
+        if (distance <= 0)
+        {
+            distance = lastUltrasoundSensorReading;
+        }
+
+        lastUltrasoundSensorReading = distance;
+        return lastUltrasoundSensorReading;
     }
 
     const ultrasonicSensorEventId = 54121;

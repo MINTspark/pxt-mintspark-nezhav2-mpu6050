@@ -7,7 +7,7 @@
         "radio": "*",
         "microphone": "*",
         "pxt-nezha": "github:mpoelzl/pxt-nezha#05f94a013247cdb97ccc6773ffce6d688da6b6d2",
-        "pxt-PlanetX": "github:mpoelzl/pxt-PlanetX#5c1ccb8fa587389923e2cb40322295f8b2ddf032"
+        "pxt-PlanetX": "github:mpoelzl/pxt-planetx#5c1ccb8fa587389923e2cb40322295f8b2ddf032"
     },
     "files": [
         "main.blocks",
@@ -19,7 +19,7 @@
         "test.ts"
     ],
     "targetVersions": {
-        "target": "6.0.26",
+        "target": "6.0.27",
         "targetId": "microbit"
     },
     "supportedTargets": [

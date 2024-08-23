@@ -6,6 +6,8 @@ namespace mintspark {
 
     let maxSpeed = 25;
     let minSpeed = 12;
+    let MPU6050Initialised = false;
+
     function restrictSpeed(speed: number):number{
         if (speed > 100) { speed = 100 };
         if (speed < -100) { speed = -100 };
@@ -149,6 +151,92 @@ namespace mintspark {
             setMotorSpeed(tankMotorRight, 0);
             setMotorSpeed(tankMotorLeft, 0);
         }
+    }
+
+
+    //% weight=32
+    //% block="Drive straight gyro speed %speed seconds %seconds"
+    //% subcategory="Tank Mode"
+    //% group="Tank Mode"
+    //% speed.min=-100 speed.max=100
+    //% expandableArgumentMode="toggle"
+    //% inlineInputMode=inline
+    //% color=#E63022
+    export function driveStraightGyro(speed: number, seconds: number): void {
+        let modierfierL = tankMotorLeftReversed ? -1 : 1;
+        let modierfierR = tankMotorRightReversed ? -1 : 1;
+
+        // Setup IMU
+        if (!MPU6050Initialised) {
+            if (MINTsparkMpu6050.InitMPU6050(0)) {
+                MPU6050Initialised = true;
+            }
+            else {
+                return;
+            }
+        }
+
+        MINTsparkMpu6050.Calibrate(1);
+
+        // PID Control
+        let startTime = input.runningTime();
+        let Kp = 10;
+        let Ki = 0.1;
+        let Kd = 0.5;
+        let targetHeading = MINTsparkMpu6050.UpdateMPU6050().orientation.yaw;
+        let lastError = 0;
+        let errorSum = 0;
+        let speedL = speed;
+        let speedR = speed;
+
+        while (input.runningTime() - startTime < seconds * 1000) {
+            let heading = MINTsparkMpu6050.UpdateMPU6050().orientation.yaw;
+            let error = targetHeading - heading;
+            if (error > 180) { error -= 360 };
+            if (error < -180) { error += 360 };
+
+            let errorChange = error - lastError;
+            let deleteError = error;
+            let correction = Kp * error + Ki * errorSum + Kd * errorChange;
+
+            lastError = error;
+
+            if (error <= 10 && error >= -10) {
+                errorSum += error;
+            }
+            else if (error > 10) {
+                errorSum += 10;
+            }
+            else {
+                errorSum -= 10;
+            }
+
+            speedL = speed + correction;
+            speedR = speed - correction;
+            if (speedL < 0) { speedL = 0 };
+            if (speedR < 0) { speedR = 0 };
+            if (speedL > 100) { speedL = 100 };
+            if (speedR > 100) { speedR = 100 };
+
+            /*datalogger.log(
+                datalogger.createCV("heading", heading),
+                datalogger.createCV("error", error),
+                datalogger.createCV("errorSum", errorSum),
+                datalogger.createCV("errorChange", errorChange),
+                datalogger.createCV("correct", correction),
+                datalogger.createCV("sl", speedL),
+                datalogger.createCV("sr", speedR),
+                datalogger.createCV("sr", speedR)
+            )
+            */
+
+            // Change motor speed
+            setMotorSpeed(tankMotorLeft, speedL * modierfierL);
+            setMotorSpeed(tankMotorRight, speedR * modierfierR);
+        }
+
+        setMotorSpeed(tankMotorRight, 0);
+        setMotorSpeed(tankMotorLeft, 0);
     }
 
     //% weight=30

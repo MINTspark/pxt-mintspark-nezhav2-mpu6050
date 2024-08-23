@@ -7,6 +7,7 @@ namespace mintspark {
     let maxSpeed = 25;
     let minSpeed = 12;
     let MPU6050Initialised = false;
+    let stopDrive = true;
 
     function restrictSpeed(speed: number):number{
         if (speed > 100) { speed = 100 };
@@ -51,6 +52,7 @@ namespace mintspark {
     //% block="Stop motor %motor"
     //% color=#E63022
     export function stopMotor(motor: neZha.MotorList): void {
+        stopDrive = true;
         setMotorSpeed(motor, 0)
     }
 
@@ -60,6 +62,7 @@ namespace mintspark {
     //% block="Stop all motor"
     //% color=#E63022
     export function stopAllMotor(): void {
+        stopDrive = true;
         setMotorSpeed(neZha.MotorList.M1, 0)
         setMotorSpeed(neZha.MotorList.M2, 0)
         setMotorSpeed(neZha.MotorList.M3, 0)
@@ -85,7 +88,7 @@ namespace mintspark {
     //% weight=50
     //% block="Set motor left to %motor reverse %reverse"
     //% subcategory="Tank Mode"
-    //% group="Tank Mode"
+    //% group="Setup"
     //% motor.defl=neZha.MotorList.M1
     //% reverse.shadow="toggleYesNo"
     //% color=#E63022
@@ -97,7 +100,7 @@ namespace mintspark {
     //% weight=45
     //% block="Set motor right to %motor reverse %reverse"
     //% subcategory="Tank Mode"
-    //% group="Tank Mode"
+    //% group="Setup"
     //% motor.defl=neZha.MotorList.M2
     //% reverse.shadow="toggleYesNo"
     //% color=#E63022
@@ -109,13 +112,13 @@ namespace mintspark {
     //% weight=40
     //% block="Drive straight speed %speed\\% || seconds %seconds"
     //% subcategory="Tank Mode"
-    //% group="Tank Mode"
+    //% group="Drive"
     //% speed.min=-100 speed.max=100
     //% expandableArgumentMode="toggle"
     //% inlineInputMode=inline
     //% color=#E63022
     export function driveTankModeSingleSpeed(speed: number, seconds?: number): void {
-        //speed = restrictSpeed(speed);
+        stopDrive = true;
         let tm1Speed = tankMotorLeftReversed ? -speed : speed;
         let tm2Speed = tankMotorRightReversed ? -speed : speed;
         setMotorSpeed(tankMotorLeft, tm1Speed);
@@ -132,15 +135,14 @@ namespace mintspark {
     //% weight=35
     //% block="Drive left motor %speedLeft\\% right motor %speedRight\\% || seconds %seconds"
     //% subcategory="Tank Mode"
-    //% group="Tank Mode"
+    //% group="Drive"
     //% speedLeft.min=-100 speedLeft.max=100
     //% speedRight.min=-100 speedRight.max=100
     //% expandableArgumentMode="toggle"
     //% inlineInputMode=inline
     //% color=#E63022
     export function driveTankModeDualSpeed(speedLeft: number, speedRight: number, seconds?: number): void {
-        //speedLeft = restrictSpeed(speedLeft);
-        //speedRight = restrictSpeed(speedRight);
+        stopDrive = true;
         let tmLSpeed = tankMotorLeftReversed ? -speedLeft : speedLeft;
         let tmRSpeed = tankMotorRightReversed ? -speedRight : speedRight;
         setMotorSpeed(tankMotorLeft, tmLSpeed);
@@ -155,14 +157,14 @@ namespace mintspark {
 
 
     //% weight=32
-    //% block="Drive straight gyro speed %speed seconds %seconds"
+    //% block="Drive straight gyro speed %speed || seconds %seconds"
     //% subcategory="Tank Mode"
-    //% group="Tank Mode"
+    //% group="Drive"
     //% speed.min=-100 speed.max=100
     //% expandableArgumentMode="toggle"
     //% inlineInputMode=inline
     //% color=#E63022
-    export function driveStraightGyro(speed: number, seconds: number): void {
+    export function driveStraightGyro(speed: number, seconds?: number): void {
         let modierfierL = tankMotorLeftReversed ? -1 : 1;
         let modierfierR = tankMotorRightReversed ? -1 : 1;
 
@@ -188,8 +190,16 @@ namespace mintspark {
         let errorSum = 0;
         let speedL = speed;
         let speedR = speed;
+        stopDrive = false;
 
-        while (input.runningTime() - startTime < seconds * 1000) {
+        while (input.runningTime() - startTime < 30000) {
+            if (stopDrive) break;
+
+            if (seconds != null && input.runningTime() - startTime > seconds * 1000)
+            {
+                break;
+            }
+            
             let heading = MINTsparkMpu6050.UpdateMPU6050().orientation.yaw;
             let error = targetHeading - heading;
             if (error > 180) { error -= 360 };
@@ -218,31 +228,21 @@ namespace mintspark {
             if (speedL > 100) { speedL = 100 };
             if (speedR > 100) { speedR = 100 };
 
-            /*datalogger.log(
-                datalogger.createCV("heading", heading),
-                datalogger.createCV("error", error),
-                datalogger.createCV("errorSum", errorSum),
-                datalogger.createCV("errorChange", errorChange),
-                datalogger.createCV("correct", correction),
-                datalogger.createCV("sl", speedL),
-                datalogger.createCV("sr", speedR),
-                datalogger.createCV("sr", speedR)
-            )
-            */
-
             // Change motor speed
+            if (stopDrive) break;
             setMotorSpeed(tankMotorLeft, speedL * modierfierL);
             setMotorSpeed(tankMotorRight, speedR * modierfierR);
         }
 
         setMotorSpeed(tankMotorRight, 0);
         setMotorSpeed(tankMotorLeft, 0);
+        stopDrive = true;
     }
 
     //% weight=30
     //% block="Spot-turn %direction at speed %speed\\% for %milliSeconds ms"
     //% subcategory="Tank Mode"
-    //% group="Tank Mode"
+    //% group="Turn"
     //% speed.min=10 speed.max=100
     //% inlineInputMode=inline
     //% color=#E63022
@@ -255,6 +255,84 @@ namespace mintspark {
         setMotorSpeed(tankMotorLeft, tmLSpeed);
         setMotorSpeed(tankMotorRight, tmRSpeed);
         basic.pause(milliSeconds);
+        setMotorSpeed(tankMotorRight, 0);
+        setMotorSpeed(tankMotorLeft, 0);
+    }
+
+    //% subcategory="Tank Mode"
+    //% group="Turn"
+    //% block="Gyro spot-turn %turn for angle %angle\\% || with speed %speed"
+    //% expandableArgumentMode="toggle"
+    //% inlineInputMode=inline
+    //% speedL.min=10 speedL.max=100 speedL.defl=25 angle.min=1 angle.max=180 angle.defl=90
+    //% weight=25
+    //% color=#E63022
+    export function turnTankModeGyro(turn: TurnDirection, angle: number, speed?: number): void {
+        stopDrive = true;
+        angle = angle * 0.95;
+
+        if (speed == null) {
+            speed = 25;
+        }
+
+        let speedL = speed;
+        let speedR = -speed;
+
+        if (turn == TurnDirection.Left) {
+            speedL = -speed;
+            speedR = speed;
+        }
+
+        // Setup IMU
+        if (!MPU6050Initialised) {
+            if (MINTsparkMpu6050.InitMPU6050(0)) {
+                MPU6050Initialised = true;
+            }
+            else {
+                return;
+            }
+        }
+
+        MINTsparkMpu6050.Calibrate(1);
+
+        // PID Control
+        let startTime = input.runningTime();
+        let startHeading = MINTsparkMpu6050.UpdateMPU6050().orientation.yaw;
+        let change = 0;
+
+        setMotorSpeed(tankMotorRight, speedR);
+        setMotorSpeed(tankMotorLeft, speedL);
+        basic.pause(200);
+
+        while (input.runningTime() - startTime < 5000) {
+            let heading = MINTsparkMpu6050.UpdateMPU6050().orientation.yaw;
+            let reciprocal = heading + 180;
+            if (reciprocal >= 360) reciprocal -= 360;
+
+            if (turn == TurnDirection.Right) {
+                if (heading < startHeading && heading < reciprocal) {
+                    heading += 360;
+                }
+
+                change = heading - startHeading;
+            }
+            else {
+                if (heading > startHeading && heading > reciprocal) {
+                    heading -= 360;
+                }
+
+                change = startHeading - heading;
+            }
+
+            if (change > angle) break;
+
+            /*datalogger.log(
+                datalogger.createCV("heading", heading),
+                datalogger.createCV("change", change)
+            )
+            */
+        }
+
         setMotorSpeed(tankMotorRight, 0);
         setMotorSpeed(tankMotorLeft, 0);
     }

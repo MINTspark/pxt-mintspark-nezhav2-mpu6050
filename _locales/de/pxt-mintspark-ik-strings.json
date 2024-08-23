@@ -11,7 +11,7 @@
     "mintspark.driveTankModeDualSpeed|block": "Fahre Motor L %speedLeft\\% Motor R %speedRight\\% || für %seconds Sekunden",
     "mintspark.driveTankModeSingleSpeedGyro|block": "Vorwärts mit Kreiselsensor Geschwindigkeit %speed || seconds %seconds",
     "mintspark.turnTankMode|block": "Drehe %direction Geschwindigkeit %speed\\% für %milliSeconds ms",
-    "mintspark.turnTankModeGyro|block": "Drehe mit Kreiselsensor %direction um %angle Grad || mit Geschwindigkeit %speed",
+    "mintspark.turnTankModeGyro|block": "Drehe mit Kreiselsensor %turn um %angle Grad || mit Geschwindigkeit %speed",
     "mintspark.ultrasoundSensor|block": "Ultraschallsensor %Rjpin Distanz %distance_unit",
     "mintspark.onUltrasonicSensorTriggered|block": "Ultraschallsensor %Rjpin ausgelöst",
     "mintspark.trackingSensor|block": "Linenverfolgungs-Sensor %Rjpin sieht %state",

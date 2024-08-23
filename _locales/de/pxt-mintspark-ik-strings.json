@@ -7,9 +7,11 @@
     "mintspark.setServoAngel|block": "Drehe Servo %servo auf Winkel %angle°",
     "mintspark.setTankMotorLeft|block": "Linker Motor ist %motor umdrehen %reverse",
     "mintspark.setTankMotorRight|block": "Rechter Motor ist %motor umdrehen %reverse",
-    "mintspark.driveTankModeSingleSpeed|block": "Fahre  %speed\\% || für %seconds Sekunden",
+    "mintspark.driveTankModeSingleSpeed|block": "Vorwärts Geschwindigkeit %speed\\% || für %seconds Sekunden",
     "mintspark.driveTankModeDualSpeed|block": "Fahre Motor L %speedLeft\\% Motor R %speedRight\\% || für %seconds Sekunden",
+    "mintspark.driveTankModeSingleSpeedGyro|block": "Vorwärts mit Kreiselsensor Geschwindigkeit %speed || seconds %seconds",
     "mintspark.turnTankMode|block": "Drehe %direction Geschwindigkeit %speed\\% für %milliSeconds ms",
+    "mintspark.turnTankModeGyro|block": "Drehe mit Kreiselsensor %direction um %angle Grad || mit Geschwindigkeit %speed",
     "mintspark.ultrasoundSensor|block": "Ultraschallsensor %Rjpin Distanz %distance_unit",
     "mintspark.onUltrasonicSensorTriggered|block": "Ultraschallsensor %Rjpin ausgelöst",
     "mintspark.trackingSensor|block": "Linenverfolgungs-Sensor %Rjpin sieht %state",
@@ -34,5 +36,8 @@
     "{id:group}Input": "Eingabe",
     "{id:group}Sensor": "Sensor",
     "{id:group}Light": "Licht",
-    "{id:group}Display": "Display"
+    "{id:group}Display": "Display",
+    "{id:group}Setup": "Setup",
+    "{id:group}Drive": "Fahren",
+    "{id:group}Turn": "Drehen"
 }

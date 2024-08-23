@@ -155,8 +155,7 @@ namespace mintspark {
         }
     }
 
-
-    //% weight=32
+    //% weight=37
     //% block="Drive straight gyro speed %speed || seconds %seconds"
     //% subcategory="Tank Mode"
     //% group="Drive"
@@ -164,7 +163,7 @@ namespace mintspark {
     //% expandableArgumentMode="toggle"
     //% inlineInputMode=inline
     //% color=#E63022
-    export function driveStraightGyro(speed: number, seconds?: number): void {
+    export function driveTankModeSingleSpeedGyro(speed: number, seconds?: number): void {
         let modierfierL = tankMotorLeftReversed ? -1 : 1;
         let modierfierR = tankMotorRightReversed ? -1 : 1;
 
@@ -183,7 +182,7 @@ namespace mintspark {
         // PID Control
         let startTime = input.runningTime();
         let Kp = 10;
-        let Ki = 0.1;
+        let Ki = 0.05;
         let Kd = 0.5;
         let targetHeading = MINTsparkMpu6050.UpdateMPU6050().orientation.yaw;
         let lastError = 0;
@@ -247,7 +246,6 @@ namespace mintspark {
     //% inlineInputMode=inline
     //% color=#E63022
     export function turnTankMode(direction: TurnDirection, speed: number, milliSeconds: number): void {
-        //speed = restrictSpeed(speed);
         let tmLSpeed = tankMotorLeftReversed ? -speed : speed;
         let tmRSpeed = tankMotorRightReversed ? -speed : speed;
         if (direction == TurnDirection.Right) { tmRSpeed = -tmRSpeed; } else { tmLSpeed = -tmLSpeed; }
@@ -261,7 +259,7 @@ namespace mintspark {
 
     //% subcategory="Tank Mode"
     //% group="Turn"
-    //% block="Gyro spot-turn %turn for angle %angle\\% || with speed %speed"
+    //% block="Gyro spot-turn %turn for angle %angle || with speed %speed"
     //% expandableArgumentMode="toggle"
     //% inlineInputMode=inline
     //% speedL.min=10 speedL.max=100 speedL.defl=25 angle.min=1 angle.max=180 angle.defl=90
@@ -275,13 +273,9 @@ namespace mintspark {
             speed = 25;
         }
 
-        let speedL = speed;
-        let speedR = -speed;
-
-        if (turn == TurnDirection.Left) {
-            speedL = -speed;
-            speedR = speed;
-        }
+        let tmLSpeed = tankMotorLeftReversed ? -speed : speed;
+        let tmRSpeed = tankMotorRightReversed ? -speed : speed;
+        if (turn == TurnDirection.Right) { tmRSpeed = -tmRSpeed; } else { tmLSpeed = -tmLSpeed; }
 
         // Setup IMU
         if (!MPU6050Initialised) {
@@ -300,8 +294,8 @@ namespace mintspark {
         let startHeading = MINTsparkMpu6050.UpdateMPU6050().orientation.yaw;
         let change = 0;
 
-        setMotorSpeed(tankMotorRight, speedR);
-        setMotorSpeed(tankMotorLeft, speedL);
+        setMotorSpeed(tankMotorRight, tmRSpeed);
+        setMotorSpeed(tankMotorLeft, tmLSpeed);
         basic.pause(200);
 
         while (input.runningTime() - startTime < 5000) {

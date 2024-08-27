@@ -132,6 +132,18 @@ namespace mintspark {
         }
     }
 
+    //% weight=10
+    //% block="Stop drive"
+    //% subcategory="Tank Mode"
+    //% group="Drive"
+    //% inlineInputMode=inline
+    //% color=#E63022
+    export function driveTankModeStop(): void {
+        stopDrive = true;
+        setMotorSpeed(tankMotorLeft, 0);
+        setMotorSpeed(tankMotorRight, 0);
+    }
+
     //% weight=35
     //% block="Drive left motor %speedLeft\\% right motor %speedRight\\% || seconds %seconds"
     //% subcategory="Tank Mode"
@@ -161,7 +173,6 @@ namespace mintspark {
     //% group="Drive"
     //% speed.min=-100 speed.max=100
     //% expandableArgumentMode="toggle"
-    //% inlineInputMode=inline
     //% color=#E63022
     export function driveTankModeSingleSpeedGyro(speed: number, seconds?: number): void {
         let modierfierL = tankMotorLeftReversed ? -1 : 1;
@@ -180,62 +191,95 @@ namespace mintspark {
         MINTsparkMpu6050.Calibrate(1);
 
         // PID Control
-        let startTime = input.runningTime();
-        let Kp = 10;
-        let Ki = 0.05;
-        let Kd = 0.5;
+        let startTime = input.runningTime();  let Kp = 10; let Ki = 0.05; let Kd = 0.5;
         let targetHeading = MINTsparkMpu6050.UpdateMPU6050().orientation.yaw;
-        let lastError = 0;
-        let errorSum = 0;
-        let speedL = speed;
-        let speedR = speed;
+        let lastError = 0; let errorSum = 0; let speedL = speed; let speedR = speed;
         stopDrive = false;
 
-        while (input.runningTime() - startTime < 30000) {
-            if (stopDrive) break;
+        if (seconds != null)
+        {
+            while (input.runningTime() - startTime < seconds * 1000) {
+                if (stopDrive) break;
 
-            if (seconds != null && input.runningTime() - startTime > seconds * 1000)
-            {
-                break;
+                let heading = MINTsparkMpu6050.UpdateMPU6050().orientation.yaw;
+                let error = targetHeading - heading;
+                if (error > 180) { error -= 360 };
+                if (error < -180) { error += 360 };
+
+                let errorChange = error - lastError;
+                let deleteError = error;
+                let correction = Kp * error + Ki * errorSum + Kd * errorChange;
+                lastError = error;
+
+                if (error <= 10 && error >= -10) {
+                    errorSum += error;
+                }
+                else if (error > 10) {
+                    errorSum += 10;
+                }
+                else {
+                    errorSum -= 10;
+                }
+
+                speedL = speed + correction;
+                speedR = speed - correction;
+                if (speedL < 0) { speedL = 0 };  if (speedR < 0) { speedR = 0 };  if (speedL > 100) { speedL = 100 };  if (speedR > 100) { speedR = 100 };
+
+                // Change motor speed
+                if (stopDrive) break;
+                setMotorSpeed(tankMotorLeft, speedL * modierfierL);
+                setMotorSpeed(tankMotorRight, speedR * modierfierR);
+
+                basic.pause(10);
             }
-            
-            let heading = MINTsparkMpu6050.UpdateMPU6050().orientation.yaw;
-            let error = targetHeading - heading;
-            if (error > 180) { error -= 360 };
-            if (error < -180) { error += 360 };
 
-            let errorChange = error - lastError;
-            let deleteError = error;
-            let correction = Kp * error + Ki * errorSum + Kd * errorChange;
-
-            lastError = error;
-
-            if (error <= 10 && error >= -10) {
-                errorSum += error;
-            }
-            else if (error > 10) {
-                errorSum += 10;
-            }
-            else {
-                errorSum -= 10;
-            }
-
-            speedL = speed + correction;
-            speedR = speed - correction;
-            if (speedL < 0) { speedL = 0 };
-            if (speedR < 0) { speedR = 0 };
-            if (speedL > 100) { speedL = 100 };
-            if (speedR > 100) { speedR = 100 };
-
-            // Change motor speed
-            if (stopDrive) break;
-            setMotorSpeed(tankMotorLeft, speedL * modierfierL);
-            setMotorSpeed(tankMotorRight, speedR * modierfierR);
+            setMotorSpeed(tankMotorRight, 0);
+            setMotorSpeed(tankMotorLeft, 0);
+            stopDrive = true;
         }
+        else
+        {
+            control.inBackground(() => {
+                while (input.runningTime() - startTime < 60000) {
+                    if (stopDrive) break;
 
-        setMotorSpeed(tankMotorRight, 0);
-        setMotorSpeed(tankMotorLeft, 0);
-        stopDrive = true;
+                    let heading = MINTsparkMpu6050.UpdateMPU6050().orientation.yaw;
+                    let error = targetHeading - heading;
+                    if (error > 180) { error -= 360 };
+                    if (error < -180) { error += 360 };
+
+                    let errorChange = error - lastError;
+                    let deleteError = error;
+                    let correction = Kp * error + Ki * errorSum + Kd * errorChange;
+                    lastError = error;
+
+                    if (error <= 10 && error >= -10) {
+                        errorSum += error;
+                    }
+                    else if (error > 10) {
+                        errorSum += 10;
+                    }
+                    else {
+                        errorSum -= 10;
+                    }
+
+                    speedL = speed + correction;
+                    speedR = speed - correction;
+                    if (speedL < 0) { speedL = 0 }; if (speedR < 0) { speedR = 0 }; if (speedL > 100) { speedL = 100 }; if (speedR > 100) { speedR = 100 };
+
+                    // Change motor speed
+                    if (stopDrive) break;
+                    setMotorSpeed(tankMotorLeft, speedL * modierfierL);
+                    setMotorSpeed(tankMotorRight, speedR * modierfierR);
+
+                    basic.pause(10);
+                }
+
+                setMotorSpeed(tankMotorRight, 0);
+                setMotorSpeed(tankMotorLeft, 0);
+                stopDrive = true;
+            })
+        }
     }
 
     //% weight=30
@@ -325,6 +369,8 @@ namespace mintspark {
                 datalogger.createCV("change", change)
             )
             */
+
+            basic.pause(10);
         }
 
         setMotorSpeed(tankMotorRight, 0);

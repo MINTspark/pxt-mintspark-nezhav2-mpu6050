@@ -392,19 +392,19 @@ namespace mintspark {
     //% weight=20
     //% subcategory="Tank Mode"
     //% group="Claw"
-    //% block="Open claw Servo connected to %servo"
+    //% block="Open claw"
     //% color=#a3a3c2
-    export function openClaw(servo: neZha.ServoList): void {
-        neZha.setServoAngel(neZha.ServoTypeList._180, servo, 15);
+    export function openClaw(): void {
+        neZha.setServoAngel(neZha.ServoTypeList._180, clawServo, 15);
     }
 
     //% weight=15
     //% subcategory="Tank Mode"
     //% group="Claw"
-    //% block="Close claw Servo connected to %servo"
+    //% block="Close claw"
     //% color=#a3a3c2
-    export function closeClaw(servo: neZha.ServoList): void {
-        neZha.setServoAngel(neZha.ServoTypeList._180, servo, 68);
+    export function closeClaw(): void {
+        neZha.setServoAngel(neZha.ServoTypeList._180, clawServo, 68);
     }
 
     //% weight=80

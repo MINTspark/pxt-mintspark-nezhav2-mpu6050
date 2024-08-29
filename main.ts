@@ -77,6 +77,7 @@ namespace mintspark {
     let tankMotorLeftReversed: boolean = false;
     let tankMotorRight: neZha.MotorList = neZha.MotorList.M2;
     let tankMotorRightReversed: boolean = false;
+    let clawServo: neZha.ServoList = neZha.ServoList.S1;
 
     export enum TurnDirection {
         //% block="left"
@@ -86,7 +87,7 @@ namespace mintspark {
     }
 
     //% weight=50
-    //% block="Set motor left to %motor reverse %reverse"
+    //% block="Set robot motor left to %motor reverse %reverse"
     //% subcategory="Tank Mode"
     //% group="Setup"
     //% motor.defl=neZha.MotorList.M1
@@ -98,7 +99,7 @@ namespace mintspark {
     }
 
     //% weight=45
-    //% block="Set motor right to %motor reverse %reverse"
+    //% block="Set robot motor right to %motor reverse %reverse"
     //% subcategory="Tank Mode"
     //% group="Setup"
     //% motor.defl=neZha.MotorList.M2
@@ -107,6 +108,17 @@ namespace mintspark {
     export function setTankMotorRight(motor: neZha.MotorList, reverse: boolean): void {
         tankMotorRight = motor;
         tankMotorRightReversed = reverse;
+    }
+
+    //% weight=40
+    //% block="Set claw servo to port %servo"
+    //% subcategory="Tank Mode"
+    //% group="Setup"
+    //% motor.defl=neZha.ServoList.S1
+    //% reverse.shadow="toggleYesNo"
+    //% color=#E63022
+    export function setClawServo(servo: neZha.ServoList): void {
+        clawServo = servo;
     }
 
     //% weight=40
@@ -168,7 +180,7 @@ namespace mintspark {
     }
 
     //% weight=37
-    //% block="Drive straight gyro speed %speed || seconds %seconds"
+    //% block="Gyro drive straight speed %speed || seconds %seconds"
     //% subcategory="Tank Mode"
     //% group="Drive"
     //% speed.min=-100 speed.max=100
@@ -375,6 +387,24 @@ namespace mintspark {
 
         setMotorSpeed(tankMotorRight, 0);
         setMotorSpeed(tankMotorLeft, 0);
+    }
+
+    //% weight=20
+    //% subcategory="Tank Mode"
+    //% group="Claw"
+    //% block="Open claw Servo connected to %servo"
+    //% color=#a3a3c2
+    export function openClaw(servo: neZha.ServoList): void {
+        neZha.setServoAngel(neZha.ServoTypeList._180, servo, 15);
+    }
+
+    //% weight=15
+    //% subcategory="Tank Mode"
+    //% group="Claw"
+    //% block="Close claw Servo connected to %servo"
+    //% color=#a3a3c2
+    export function closeClaw(servo: neZha.ServoList): void {
+        neZha.setServoAngel(neZha.ServoTypeList._180, servo, 68);
     }
 
     //% weight=80

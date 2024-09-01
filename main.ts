@@ -318,12 +318,12 @@ namespace mintspark {
     //% block="Gyro spot-turn %turn for angle %angle || with speed %speed"
     //% expandableArgumentMode="toggle"
     //% inlineInputMode=inline
-    //% speedL.min=10 speedL.max=100 speedL.defl=25 angle.min=1 angle.max=180 angle.defl=90
+    //% speedL.min=10 speedL.max=100 speedL.defl=25 angle.min=1 angle.max=200 angle.defl=90
     //% weight=25
     //% color=#E63022
     export function turnTankModeGyro(turn: TurnDirection, angle: number, speed?: number): void {
         stopDrive = true;
-        angle = angle * 0.95;
+        angle = angle;
 
         if (speed == null) {
             speed = 25;

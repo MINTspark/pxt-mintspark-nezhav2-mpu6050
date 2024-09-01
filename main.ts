@@ -323,7 +323,6 @@ namespace mintspark {
     //% color=#E63022
     export function turnTankModeGyro(turn: TurnDirection, angle: number, speed?: number): void {
         stopDrive = true;
-        angle = angle;
 
         if (speed == null) {
             speed = 25;

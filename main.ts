@@ -295,13 +295,13 @@ namespace mintspark {
     }
 
     //% weight=30
-    //% block="Spot-turn %direction at speed %speed\\% for %milliSeconds ms"
+    //% block="Spot-turn %direction for %milliSeconds ms || with speed %speed\\%"
     //% subcategory="Tank Mode"
     //% group="Turn"
-    //% speed.min=10 speed.max=100
+    //% speed.min=10 speed.max=100 speed.defl=25
     //% inlineInputMode=inline
     //% color=#E63022
-    export function turnTankMode(direction: TurnDirection, speed: number, milliSeconds: number): void {
+    export function turnTankMode(direction: TurnDirection, milliSeconds: number, speed?: number): void {
         let tmLSpeed = tankMotorLeftReversed ? -speed : speed;
         let tmRSpeed = tankMotorRightReversed ? -speed : speed;
         if (direction == TurnDirection.Right) { tmRSpeed = -tmRSpeed; } else { tmLSpeed = -tmLSpeed; }
@@ -318,7 +318,7 @@ namespace mintspark {
     //% block="Gyro spot-turn %turn for angle %angle || with speed %speed"
     //% expandableArgumentMode="toggle"
     //% inlineInputMode=inline
-    //% speedL.min=10 speedL.max=100 speedL.defl=25 angle.min=1 angle.max=200 angle.defl=90
+    //% speed.min=10 speed.max=100 speed.defl=25 angle.min=1 angle.max=200 angle.defl=90
     //% weight=25
     //% color=#E63022
     export function turnTankModeGyro(turn: TurnDirection, angle: number, speed?: number): void {

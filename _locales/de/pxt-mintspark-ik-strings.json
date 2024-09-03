@@ -12,7 +12,7 @@
     "mintspark.driveTankModeStop|block": "Stoppe Fahrt",
     "mintspark.driveTankModeDualSpeed|block": "Fahre Motor L %speedLeft\\% Motor R %speedRight\\% || für %seconds Sekunden",
     "mintspark.driveTankModeSingleSpeedGyro|block": "Vorwärts mit Sensor und Speed %speed || seconds %seconds",
-    "mintspark.turnTankMode|block": "Drehe %direction mit Speed %speed\\% für %milliSeconds ms",
+    "mintspark.turnTankMode|block": "Drehe %direction für %milliSeconds ms || mit Speed %speed\\%",
     "mintspark.turnTankModeGyro|block": "Drehe mit Sensor %turn um %angle Grad || mit Speed %speed",
     "mintspark.openClaw|block": "Greifer öffnen",
     "mintspark.closeClaw|block": "Greifer schließen",

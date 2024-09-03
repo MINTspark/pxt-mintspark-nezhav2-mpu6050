@@ -347,7 +347,8 @@ namespace mintspark {
         // PID Control
         let startTime = input.runningTime();
         let startHeading = MINTsparkMpu6050.UpdateMPU6050().orientation.yaw;
-        let change = 0;
+        let previousHeading = startHeading;
+        let totalChange = 0;
 
         setMotorSpeed(tankMotorRight, tmRSpeed);
         setMotorSpeed(tankMotorLeft, tmLSpeed);
@@ -355,32 +356,29 @@ namespace mintspark {
 
         while (input.runningTime() - startTime < 5000) {
             let heading = MINTsparkMpu6050.UpdateMPU6050().orientation.yaw;
-            let reciprocal = heading + 180;
-            if (reciprocal >= 360) reciprocal -= 360;
+            let change = previousHeading - heading;
 
             if (turn == TurnDirection.Right) {
-                if (heading < startHeading && heading < reciprocal) {
-                    heading += 360;
-                }
-
-                change = heading - startHeading;
-            }
-            else {
-                if (heading > startHeading && heading > reciprocal) {
-                    heading -= 360;
-                }
-
-                change = startHeading - heading;
+                change *= -1;
             }
 
-            if (change > angle) break;
+            if (change < 0) {
+                change += 360;
+            }
+
+            totalChange += change;
+
+            if (totalChange > angle) break;
 
             /*datalogger.log(
+                datalogger.createCV("angle", angle),
+                datalogger.createCV("startHeading", startHeading),
                 datalogger.createCV("heading", heading),
                 datalogger.createCV("change", change)
             )
             */
 
+            previousHeading = heading;
             basic.pause(10);
         }
 

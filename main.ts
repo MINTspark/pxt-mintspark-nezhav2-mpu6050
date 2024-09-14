@@ -190,16 +190,12 @@ namespace mintspark {
         let modierfierL = tankMotorLeftReversed ? -1 : 1;
         let modierfierR = tankMotorRightReversed ? -1 : 1;
 
-        // Setup IMU
-        if (!MPU6050Initialised) {
-            if (MINTsparkMpu6050.InitMPU6050(0)) {
-                MPU6050Initialised = true;
-            }
-            else {
-                return;
-            }
+        // Setup IMU, exit if not initialised
+        if (!setupMPU6050()) {
+            return;
         }
 
+        // Calibrate 6050 sensor for 1 second (robot must remain still during this period)
         MINTsparkMpu6050.Calibrate(1);
 
         // PID Control
@@ -332,14 +328,9 @@ namespace mintspark {
         let tmRSpeed = tankMotorRightReversed ? -speed : speed;
         if (turn == TurnDirection.Right) { tmRSpeed = -tmRSpeed; } else { tmLSpeed = -tmLSpeed; }
 
-        // Setup IMU
-        if (!MPU6050Initialised) {
-            if (MINTsparkMpu6050.InitMPU6050(0)) {
-                MPU6050Initialised = true;
-            }
-            else {
-                return;
-            }
+        // Setup IMU, exit if not initialised
+        if (!setupMPU6050()) {
+            return;
         }
 
         MINTsparkMpu6050.Calibrate(1);
@@ -369,14 +360,6 @@ namespace mintspark {
             totalChange += change;
 
             if (totalChange > angle) break;
-
-            /*datalogger.log(
-                datalogger.createCV("angle", angle),
-                datalogger.createCV("startHeading", startHeading),
-                datalogger.createCV("heading", heading),
-                datalogger.createCV("change", change)
-            )
-            */
 
             previousHeading = heading;
             basic.pause(10);
@@ -623,5 +606,18 @@ namespace mintspark {
     //% block="clear display" color=#00B1ED
     export function oledClear() {
         PlanetX_Display.oledClear();
+    }
+
+
+
+
+    function setupMPU6050(): boolean {
+        // Setup IMU
+        if (!MPU6050Initialised) {
+            MPU6050Initialised = MINTsparkMpu6050.InitMPU6050(0);
+            return MPU6050Initialised;
+        }
+
+        return true;
     }
 }

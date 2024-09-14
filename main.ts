@@ -187,9 +187,6 @@ namespace mintspark {
     //% expandableArgumentMode="toggle"
     //% color=#E63022
     export function driveTankModeSingleSpeedGyro(speed: number, seconds?: number): void {
-        let modierfierL = tankMotorLeftReversed ? -1 : 1;
-        let modierfierR = tankMotorRightReversed ? -1 : 1;
-
         // Setup IMU, exit if not initialised
         if (!setupMPU6050()) {
             return;
@@ -198,96 +195,56 @@ namespace mintspark {
         // Calibrate 6050 sensor for 1 second (robot must remain still during this period)
         MINTsparkMpu6050.Calibrate(1);
 
-        // PID Control
-        let startTime = input.runningTime();  let Kp = 10; let Ki = 0.05; let Kd = 0.5;
-        let targetHeading = MINTsparkMpu6050.UpdateMPU6050().orientation.yaw;
-        let lastError = 0; let errorSum = 0; let speedL = speed; let speedR = speed;
-        stopDrive = false;
-
+        // Drive with PID Control
         if (seconds != null)
         {
-            while (input.runningTime() - startTime < seconds * 1000) {
-                if (stopDrive) break;
-
-                let heading = MINTsparkMpu6050.UpdateMPU6050().orientation.yaw;
-                let error = targetHeading - heading;
-                if (error > 180) { error -= 360 };
-                if (error < -180) { error += 360 };
-
-                let errorChange = error - lastError;
-                let deleteError = error;
-                let correction = Kp * error + Ki * errorSum + Kd * errorChange;
-                lastError = error;
-
-                if (error <= 10 && error >= -10) {
-                    errorSum += error;
-                }
-                else if (error > 10) {
-                    errorSum += 10;
-                }
-                else {
-                    errorSum -= 10;
-                }
-
-                speedL = speed + correction;
-                speedR = speed - correction;
-                if (speedL < 0) { speedL = 0 };  if (speedR < 0) { speedR = 0 };  if (speedL > 100) { speedL = 100 };  if (speedR > 100) { speedR = 100 };
-
-                // Change motor speed
-                if (stopDrive) break;
-                setMotorSpeed(tankMotorLeft, speedL * modierfierL);
-                setMotorSpeed(tankMotorRight, speedR * modierfierR);
-
-                basic.pause(10);
-            }
-
-            setMotorSpeed(tankMotorRight, 0);
-            setMotorSpeed(tankMotorLeft, 0);
-            stopDrive = true;
+            driveTankModeSingelSpeedGyroPid(speed, seconds);
         }
         else
         {
             control.inBackground(() => {
-                while (input.runningTime() - startTime < 60000) {
-                    if (stopDrive) break;
-
-                    let heading = MINTsparkMpu6050.UpdateMPU6050().orientation.yaw;
-                    let error = targetHeading - heading;
-                    if (error > 180) { error -= 360 };
-                    if (error < -180) { error += 360 };
-
-                    let errorChange = error - lastError;
-                    let deleteError = error;
-                    let correction = Kp * error + Ki * errorSum + Kd * errorChange;
-                    lastError = error;
-
-                    if (error <= 10 && error >= -10) {
-                        errorSum += error;
-                    }
-                    else if (error > 10) {
-                        errorSum += 10;
-                    }
-                    else {
-                        errorSum -= 10;
-                    }
-
-                    speedL = speed + correction;
-                    speedR = speed - correction;
-                    if (speedL < 0) { speedL = 0 }; if (speedR < 0) { speedR = 0 }; if (speedL > 100) { speedL = 100 }; if (speedR > 100) { speedR = 100 };
-
-                    // Change motor speed
-                    if (stopDrive) break;
-                    setMotorSpeed(tankMotorLeft, speedL * modierfierL);
-                    setMotorSpeed(tankMotorRight, speedR * modierfierR);
-
-                    basic.pause(10);
-                }
-
-                setMotorSpeed(tankMotorRight, 0);
-                setMotorSpeed(tankMotorLeft, 0);
-                stopDrive = true;
+                driveTankModeSingelSpeedGyroPid(speed, 60000);
             })
         }
+    }
+
+    function driveTankModeSingelSpeedGyroPid(speed: number, seconds: number):void{
+        let modierfierL = tankMotorLeftReversed ? -1 : 1;
+        let modierfierR = tankMotorRightReversed ? -1 : 1;
+
+        stopDrive = false;
+        let startTime = input.runningTime();
+        let lastUpdateTime = startTime;
+        let Kp = 10; let Ki = 0.05; let Kd = 0.5;
+
+        let pidController = new MINTsparkMpu6050.PIDController();
+        pidController.setGains(Kp, Ki, Kd);
+        pidController.setPoint(MINTsparkMpu6050.UpdateMPU6050().orientation.yaw);
+        let speedL = speed; let speedR = speed;
+        setMotorSpeed(tankMotorLeft, speedL / 2 * modierfierL);
+        setMotorSpeed(tankMotorRight, speedR / 2 * modierfierR);
+
+        while (input.runningTime() - startTime < seconds * 1000) {
+            if (stopDrive) break;
+
+            let updateTime = input.runningTime();
+            let pidCorrection = pidController.compute(updateTime - lastUpdateTime, MINTsparkMpu6050.UpdateMPU6050().orientation.yaw);
+            lastUpdateTime = updateTime;
+
+            speedL = Math.constrain(speed + pidCorrection, 0, 100);
+            speedR = Math.constrain(speed - pidCorrection, 0, 100);
+
+            // Change motor speed
+            if (stopDrive) break;
+            setMotorSpeed(tankMotorLeft, speedL * modierfierL);
+            setMotorSpeed(tankMotorRight, speedR * modierfierR);
+
+            basic.pause(10);
+        }
+
+        setMotorSpeed(tankMotorRight, 0);
+        setMotorSpeed(tankMotorLeft, 0);
+        stopDrive = true;
     }
 
     //% weight=30
@@ -335,9 +292,8 @@ namespace mintspark {
 
         MINTsparkMpu6050.Calibrate(1);
 
-        // PID Control
         let startTime = input.runningTime();
-        let startHeading = MINTsparkMpu6050.UpdateMPU6050().orientation.yaw;
+        let startHeading = MINTsparkMpu6050.UpdateMPU6050().orientation.yaw360;
         let previousHeading = startHeading;
         let totalChange = 0;
 
@@ -346,7 +302,7 @@ namespace mintspark {
         basic.pause(200);
 
         while (input.runningTime() - startTime < 5000) {
-            let heading = MINTsparkMpu6050.UpdateMPU6050().orientation.yaw;
+            let heading = MINTsparkMpu6050.UpdateMPU6050().orientation.yaw360;
             let change = previousHeading - heading;
 
             if (turn == TurnDirection.Right) {

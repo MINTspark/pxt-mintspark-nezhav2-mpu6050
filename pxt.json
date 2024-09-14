@@ -8,7 +8,7 @@
         "microphone": "*",
         "pxt-nezha": "github:mpoelzl/pxt-nezha#05f94a013247cdb97ccc6773ffce6d688da6b6d2",
         "pxt-PlanetX": "github:mpoelzl/pxt-planetx#4d307c33dabffb466d2a5d98e6358dbb4e16ab99",
-        "pxt-mintspark-mpu6050": "github:mpoelzl/pxt-mintspark-mpu6050#v1.0.3"
+        "pxt-mintspark-mpu6050": "github:mpoelzl/pxt-mintspark-mpu6050#v1.0.8"
     },
     "files": [
         "main.ts",

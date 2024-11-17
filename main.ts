@@ -1,41 +1,22 @@
-//% weight=100 color=#DC22E1 block="MINTspark Nezha V2" blockId="MINTspark NeZha V2" icon="\uf0e7"
+//% weight=100 color=#DC22E1 block="MINTspark Inventor V2" blockId="MINTspark Inventor V2" icon="\uf0e7"
 namespace ms_nezhaV2 {
     /*
      * NeZha V2
      */
-
-    let maxSpeed = 25;
-    let minSpeed = 12;
     let MPU6050Initialised = false;
     let stopDrive = true;
 
-    function restrictSpeed(speed: number):number{
-        if (speed > 100) { speed = 100 };
-        if (speed < -100) { speed = -100 };
-
-        if (speed < 0)
-        { 
-            if (speed > -minSpeed) { return -minSpeed; }
-            return Math.map(speed, -minSpeed, -100, -minSpeed, -maxSpeed);
-        }
-
-        if (speed > 0) 
-        {
-            if (speed < minSpeed) { return minSpeed; }
-            return Math.map(speed, minSpeed, 100, minSpeed, maxSpeed);
-        }
-
-        return 0;
-    }
-
     //% weight=37
-    //% block="Gyro drive straight speed %speed || seconds %seconds"
-    //% subcategory="Tank Mode"
-    //% group="Drive"
-    //% speed.min=-100 speed.max=100
+    //% block="Gyro drive %direction speed %speed || seconds %seconds"
+    //% subcategory="Robot Tank Drive"
+    //% group="Movement"
+    //% speed.min=1 speed.max=100
     //% expandableArgumentMode="toggle"
-    //% color=#E63022
-    export function driveTankModeSingleSpeedGyro(speed: number, seconds?: number): void {
+    //% color=#6e31c4
+    export function driveTankModeSingleSpeedGyro(direction: LinearDirection, speed: number, seconds?: number): void {
+        speed = Math.abs(speed);
+        speed = (direction == LinearDirection.Forward) ? speed : -speed;
+
         // Setup IMU, exit if not initialised
         if (!setupMPU6050()) {
             return;
@@ -96,19 +77,19 @@ namespace ms_nezhaV2 {
         stopDrive = true;
     }
 
-    //% subcategory="Tank Mode"
-    //% group="Turn"
+    //% subcategory="Robot Tank Drive"
+    //% group="Movement"
     //% block="Gyro spot-turn %turn for angle %angle || with speed %speed"
     //% expandableArgumentMode="toggle"
     //% inlineInputMode=inline
     //% speed.min=10 speed.max=100 speed.defl=25 angle.min=1 angle.max=200 angle.defl=90
     //% weight=25
-    //% color=#E63022
+    //% color=#6e31c4
     export function turnTankModeGyro(turn: TurnDirection, angle: number, speed?: number): void {
         stopDrive = true;
 
         if (speed == null) {
-            speed = 25;
+            speed = 15;
         }
 
         let tmLSpeed = speed;

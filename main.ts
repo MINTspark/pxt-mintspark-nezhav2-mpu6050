@@ -4,44 +4,83 @@ namespace ms_nezhaV2 {
      * NeZha V2
      */
     let MPU6050Initialised = false;
-    let stopDrive = true;
 
     //% weight=37
-    //% block="Gyro drive %direction speed %speed || seconds %seconds"
+    //% block="Gyro drive %direction speed %speed"
     //% subcategory="Robot Tank Drive"
-    //% group="Movement"
+    //% group="Gyro Movement"
     //% speed.min=1 speed.max=100
-    //% expandableArgumentMode="toggle"
     //% color=#6e31c4
-    export function driveTankModeSingleSpeedGyro(direction: LinearDirection, speed: number, seconds?: number): void {
+    export function driveTankModeSingleSpeedGyro(direction: LinearDirection, speed: number): void {
         speed = Math.abs(speed);
         speed = (direction == LinearDirection.Forward) ? speed : -speed;
 
         // Setup IMU, exit if not initialised
-        if (!setupMPU6050()) {
+        if (!setupAndCalibrateMPU6050()) {
             return;
         }
 
-        // Calibrate 6050 sensor for 1 second (robot must remain still during this period)
-        MINTsparkMpu6050.Calibrate(1);
-
         // Drive with PID Control
-        if (seconds != null)
-        {
-            driveTankModeSingelSpeedGyroPid(speed, seconds);
-        }
-        else
-        {
-            control.inBackground(() => {
-                driveTankModeSingelSpeedGyroPid(speed, 60000);
-            })
-        }
+        control.inBackground(() => {
+            driveTankModeSingelSpeedGyroPid(speed, 60000, MotorMovementMode.Seconds);
+        })
     }
 
-    function driveTankModeSingelSpeedGyroPid(speed: number, seconds: number):void{
-        stopDrive = false;
+    //% weight=37
+    //% block="Gyro drive %direction speed %speed for %value %mode"
+    //% subcategory="Robot Tank Drive"
+    //% group="Gyro Movement"
+    //% speed.min=1 speed.max=100
+    //% expandableArgumentMode="toggle"
+    //% color=#6e31c4
+    export function driveTankModeSingleSpeedGyroFor(direction: LinearDirection, speed: number, value: number, mode: MotorMovementMode): void {
+        speed = Math.abs(speed);
+        speed = (direction == LinearDirection.Forward) ? speed : -speed;
 
+        // Setup IMU, exit if not initialised
+        if (!setupAndCalibrateMPU6050()) {
+            return;
+        }
+
+        // Drive with PID Control
+        driveTankModeSingelSpeedGyroPid(speed, value, mode);
+    }
+
+    function setupAndCalibrateMPU6050() : boolean{
+        // Setup IMU
+        if (!MPU6050Initialised) {
+            MPU6050Initialised = MINTsparkMpu6050.InitMPU6050(0);
+        }
+
+        // Calibrate
+        if (MPU6050Initialised)
+        {
+            // Calibrate 6050 sensor for 1 second (robot must remain still during this period)
+            MINTsparkMpu6050.Calibrate(1);
+            return true;
+        }
+
+        return false;
+    }
+
+    function driveTankModeSingelSpeedGyroPid(speed: number, value: number, mode: MotorMovementMode):void{
         if (speed == 0) return;
+        newMotorMovement = false;
+        let target = 0;
+        let currentValue = 0;
+
+        switch(mode)
+        {
+            case MotorMovementMode.Seconds:
+                target = value * 1000;
+                break;
+            case MotorMovementMode.Degrees:
+                target = value;
+                break;
+            case MotorMovementMode.Turns:
+                target = value * 360;
+                break;
+        }
 
         let startTime = input.runningTime();
         let lastUpdateTime = startTime;
@@ -56,8 +95,8 @@ namespace ms_nezhaV2 {
         // Start movement
         driveTankDualSpeed(speedL / 2, speedR / 2);
 
-        while (input.runningTime() - startTime < seconds * 1000) {
-            if (stopDrive) break;
+        while (input.runningTime() - startTime < target) {
+            if (newMotorMovement) break;
 
             let updateTime = input.runningTime();
             let pidCorrection = pidController.compute(updateTime - lastUpdateTime, MINTsparkMpu6050.UpdateMPU6050().orientation.yaw);
@@ -67,18 +106,26 @@ namespace ms_nezhaV2 {
             speedR = Math.constrain(speed - pidCorrection, 0, 100);
 
             // Change motor speed
-            if (stopDrive) break;
+            if (newMotorMovement) break;
             driveTankDualSpeed(speedL, speedR);
 
             basic.pause(10);
+
+            if (mode == MotorMovementMode.Seconds)
+            {
+                currentValue = input.runningTime() - startTime;
+            }
+            else
+            {
+                
+            }
         }
 
         stopTank();
-        stopDrive = true;
     }
 
     //% subcategory="Robot Tank Drive"
-    //% group="Movement"
+    //% group="Gyro Movement"
     //% block="Gyro spot-turn %turn for angle %angle || with speed %speed"
     //% expandableArgumentMode="toggle"
     //% inlineInputMode=inline
@@ -86,7 +133,7 @@ namespace ms_nezhaV2 {
     //% weight=25
     //% color=#6e31c4
     export function turnTankModeGyro(turn: TurnDirection, angle: number, speed?: number): void {
-        stopDrive = true;
+        newMotorMovement = true;
 
         if (speed == null) {
             speed = 15;
@@ -97,7 +144,7 @@ namespace ms_nezhaV2 {
         if (turn == TurnDirection.Right) { tmRSpeed = -tmRSpeed; } else { tmLSpeed = -tmLSpeed; }
 
         // Setup IMU, exit if not initialised
-        if (!setupMPU6050()) {
+        if (!setupAndCalibrateMPU6050()) {
             return;
         }
 
@@ -340,15 +387,5 @@ namespace ms_nezhaV2 {
     //% block="clear display" color=#00B1ED
     export function oledClear() {
         PlanetX_Display.oledClear();
-    }
-
-    function setupMPU6050(): boolean {
-        // Setup IMU
-        if (!MPU6050Initialised) {
-            MPU6050Initialised = MINTsparkMpu6050.InitMPU6050(0);
-            return MPU6050Initialised;
-        }
-
-        return true;
     }
 }

@@ -23,7 +23,9 @@ namespace ms_nezhaV2 {
 
         // Drive with PID Control
         control.inBackground(() => {
-            driveTankModeSingelSpeedGyroPid(speed, 60000, MotorMovementMode.Seconds);
+            let startTime = input.runningTime();
+            let getCurrentValue = () => input.runningTime() - startTime;
+            driveTankModeSingelSpeedGyroPidToTarget(speed, 60000, getCurrentValue);
         })
     }
 
@@ -111,67 +113,6 @@ namespace ms_nezhaV2 {
         }
 
         return false;
-    }
-
-    function driveTankModeSingelSpeedGyroPid(speed: number, value: number, mode: MotorMovementMode):void{
-        if (speed == 0) return;
-        newMotorMovement = false;
-        let target = 0;
-        let currentValue = 0;
-
-        switch(mode)
-        {
-            case MotorMovementMode.Seconds:
-                target = value * 1000;
-                break;
-            case MotorMovementMode.Degrees:
-                target = value;
-                break;
-            case MotorMovementMode.Turns:
-                target = value * 360;
-                break;
-        }
-
-        let startTime = input.runningTime();
-        let lastUpdateTime = startTime;
-        let Kp = 10; let Ki = 0.05; let Kd = 0.5;
-
-        let pidController = new MINTsparkMpu6050.PIDController();
-        pidController.setGains(Kp, Ki, Kd);
-        pidController.setPoint(MINTsparkMpu6050.UpdateMPU6050().orientation.yaw);
-        let speedL = speed;
-        let speedR = speed;
-
-        // Start movement
-        driveTankDualSpeed(speedL / 2, speedR / 2);
-
-        while (input.runningTime() - startTime < target) {
-            if (newMotorMovement) break;
-
-            let updateTime = input.runningTime();
-            let pidCorrection = pidController.compute(updateTime - lastUpdateTime, MINTsparkMpu6050.UpdateMPU6050().orientation.yaw);
-            lastUpdateTime = updateTime;
-
-            speedL = Math.constrain(speed + pidCorrection, 0, 100);
-            speedR = Math.constrain(speed - pidCorrection, 0, 100);
-
-            // Change motor speed
-            if (newMotorMovement) break;
-            driveTankDualSpeed(speedL, speedR);
-
-            basic.pause(10);
-
-            if (mode == MotorMovementMode.Seconds)
-            {
-                currentValue = input.runningTime() - startTime;
-            }
-            else
-            {
-                
-            }
-        }
-
-        stopTank();
     }
 
     function driveTankModeSingelSpeedGyroPidToTarget(speed: number, target: number, getCurrentValue: () => number): void {

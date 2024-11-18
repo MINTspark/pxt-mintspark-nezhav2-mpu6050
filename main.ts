@@ -129,7 +129,7 @@ namespace ms_nezhaV2 {
         let speedR = speed;
 
         // Start movement
-        driveTankDualSpeed(speedL / 2, speedR / 2);
+        pidDriveTankDualSpeed(speedL / 2, speedR / 2);
 
         while (getCurrentValue() < target) {
             if (newMotorMovement) break;
@@ -143,7 +143,7 @@ namespace ms_nezhaV2 {
 
             // Change motor speed
             if (newMotorMovement) break;
-            driveTankDualSpeed(speedL, speedR);
+            pidDriveTankDualSpeed(speedL, speedR);
 
             basic.pause(10);
         }
@@ -206,5 +206,12 @@ namespace ms_nezhaV2 {
         }
 
         stopTank();
+    }
+
+    function pidDriveTankDualSpeed(speedLeft: number, speedRight: number): void {
+        let tmLSpeed = tankMotorLeftReversed ? -speedLeft : speedLeft;
+        let tmRSpeed = tankMotorRightReversed ? -speedRight : speedRight;
+        runMotor(tankMotorLeft, tmLSpeed);
+        runMotor(tankMotorRight, tmRSpeed);
     }
 }

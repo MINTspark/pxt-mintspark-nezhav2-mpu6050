@@ -7,7 +7,7 @@
         "radio": "*",
         "microphone": "*",
         "pxt-mintspark-mpu6050": "github:mpoelzl/pxt-mintspark-mpu6050#v1.1.2",
-        "pxt-mintspark-nezhav2": "github:mpoelzl/pxt-mintspark-nezhav2#v1.5.5"
+        "pxt-mintspark-nezhav2": "github:mpoelzl/pxt-mintspark-nezhav2#v1.5.6"
     },
     "files": [
         "main.ts",

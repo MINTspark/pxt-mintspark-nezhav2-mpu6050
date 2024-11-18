@@ -1,4 +1,4 @@
-//% weight=100 color=#DC22E1 block="MINTspark NeZha V2 MPU6050" blockId="MINTspark NeZha V2 MPU6050" icon="\uf0e7"
+//% weight=100 color=#DC22E1 block="MINTspark NeZha V2" blockId="MINTspark NeZha V2" icon="\uf0e7"
 namespace ms_nezhaV2 {
     /*
      * NeZha V2
@@ -11,6 +11,7 @@ namespace ms_nezhaV2 {
     //% group="Gyro Movement"
     //% speed.min=1 speed.max=100
     //% color=#6e31c4
+    //% inlineInputMode=inline
     export function driveTankModeSingleSpeedGyro(direction: LinearDirection, speed: number): void {
         speed = Math.abs(speed);
         speed = (direction == LinearDirection.Forward) ? speed : -speed;
@@ -33,6 +34,7 @@ namespace ms_nezhaV2 {
     //% speed.min=1 speed.max=100
     //% expandableArgumentMode="toggle"
     //% color=#6e31c4
+    //% inlineInputMode=inline
     export function driveTankModeSingleSpeedGyroFor(direction: LinearDirection, speed: number, value: number, mode: MotorMovementMode): void {
         speed = Math.abs(speed);
         speed = (direction == LinearDirection.Forward) ? speed : -speed;

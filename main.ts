@@ -7,8 +7,8 @@ namespace ms_nezhaV2 {
 
     //% weight=30
     //% block="Gyro drive %direction speed %speed"
-    //% subcategory="Gyro Tank Drive"
-    //% group="Gyro Movement"
+    //% subcategory="Robot Tank Drive MPU6050"
+    //% group="Movement MPU6050"
     //% speed.min=1 speed.max=100
     //% color=#6e31c4
     //% inlineInputMode=inline
@@ -31,8 +31,8 @@ namespace ms_nezhaV2 {
 
     //% weight=25
     //% block="Gyro drive %direction speed %speed for %value %mode"
-    //% subcategory="Gyro Tank Drive"
-    //% group="Gyro Movement"
+    //% subcategory="Robot Tank Drive MPU6050"
+    //% group="Movement MPU6050"
     //% speed.min=1 speed.max=100
     //% expandableArgumentMode="toggle"
     //% color=#6e31c4
@@ -73,8 +73,8 @@ namespace ms_nezhaV2 {
 
     //% weight=24
     //% block="Gyro drive %direction speed %speed for %distance %distanceUnit"
-    //% subcategory="Gyro Tank Drive"
-    //% group="Gyro Movement"
+    //% subcategory="Robot Tank Drive MPU6050"
+    //% group="Movement MPU6050"
     //% speed.min=1 speed.max=100
     //% expandableArgumentMode="toggle"
     //% color=#6e31c4
@@ -151,8 +151,8 @@ namespace ms_nezhaV2 {
         stopTank();
     }
 
-    //% subcategory="Gyro Tank Drive"
-    //% group="Gyro Movement"
+    //% subcategory="Robot Tank Drive MPU6050"
+    //% group="Movement MPU6050"
     //% block="Gyro spot-turn %turn for angle %angle || with speed %speed"
     //% expandableArgumentMode="toggle"
     //% inlineInputMode=inline

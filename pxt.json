@@ -1,14 +1,13 @@
 {
-    "name": "pxt-mintspark-ikv2",
+    "name": "pxt-mintspark-nezhav2-mpu6050",
     "version": "1.0.0",
     "description": "",
     "dependencies": {
         "core": "*",
         "radio": "*",
         "microphone": "*",
-        "pxt-PlanetX": "github:mpoelzl/pxt-planetx#4d307c33dabffb466d2a5d98e6358dbb4e16ab99",
         "pxt-mintspark-mpu6050": "github:mpoelzl/pxt-mintspark-mpu6050#v1.1.2",
-        "pxt-mintspark-nezhav2": "github:mpoelzl/pxt-mintspark-nezhav2#v1.5.4"
+        "pxt-mintspark-nezhav2": "github:mpoelzl/pxt-mintspark-nezhav2#v1.5.5"
     },
     "files": [
         "main.ts",

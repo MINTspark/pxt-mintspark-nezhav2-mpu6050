@@ -7,7 +7,7 @@ namespace ms_nezhaV2 {
 
     //% weight=30
     //% block="Gyro drive %direction speed %speed"
-    //% subcategory="Robot Tank Drive"
+    //% subcategory="Gyro Tank Drive"
     //% group="Gyro Movement"
     //% speed.min=1 speed.max=100
     //% color=#6e31c4
@@ -31,7 +31,7 @@ namespace ms_nezhaV2 {
 
     //% weight=25
     //% block="Gyro drive %direction speed %speed for %value %mode"
-    //% subcategory="Robot Tank Drive"
+    //% subcategory="Gyro Tank Drive"
     //% group="Gyro Movement"
     //% speed.min=1 speed.max=100
     //% expandableArgumentMode="toggle"
@@ -49,7 +49,7 @@ namespace ms_nezhaV2 {
         let target = 0;
         let getCurrentValue: () => number;
         let startTime = input.runningTime();
-        let startDegrees = readServoAbsolutePostionContinuous(tankMotorLeft)
+        let startDegrees = readServoAbsolutePostionAggregate(tankMotorLeft)
 
         switch (mode) {
             case MotorMovementMode.Seconds:
@@ -58,11 +58,11 @@ namespace ms_nezhaV2 {
                 break;
             case MotorMovementMode.Degrees:
                 target = value;
-                getCurrentValue = () => Math.abs(readServoAbsolutePostionContinuous(tankMotorLeft) - startDegrees);
+                getCurrentValue = () => Math.abs(readServoAbsolutePostionAggregate(tankMotorLeft) - startDegrees);
                 break;
             case MotorMovementMode.Turns:
                 target = value * 360;
-                getCurrentValue = () => Math.abs(readServoAbsolutePostionContinuous(tankMotorLeft) - startDegrees);
+                getCurrentValue = () => Math.abs(readServoAbsolutePostionAggregate(tankMotorLeft) - startDegrees);
                 break;
         }
 
@@ -73,7 +73,7 @@ namespace ms_nezhaV2 {
 
     //% weight=24
     //% block="Gyro drive %direction speed %speed for %distance %distanceUnit"
-    //% subcategory="Robot Tank Drive"
+    //% subcategory="Gyro Tank Drive"
     //% group="Gyro Movement"
     //% speed.min=1 speed.max=100
     //% expandableArgumentMode="toggle"
@@ -91,8 +91,8 @@ namespace ms_nezhaV2 {
         // Calculate required degrees for distance
         let distMm = (distanceUnit == DistanceUnint.Cm) ? distance * 10 : distance * 10 * 2.54;
         let target = distMm * wheelLinearDegreePerMm;
-        let startDegrees = readServoAbsolutePostionContinuous(tankMotorLeft)
-        let getCurrentValue = () => Math.abs(readServoAbsolutePostionContinuous(tankMotorLeft) - startDegrees);
+        let startDegrees = readServoAbsolutePostionAggregate(tankMotorLeft)
+        let getCurrentValue = () => Math.abs(readServoAbsolutePostionAggregate(tankMotorLeft) - startDegrees);
 
         // Drive with PID Control
         driveTankModeSingelSpeedGyroPidToTarget(speed, target, getCurrentValue);
@@ -117,10 +117,10 @@ namespace ms_nezhaV2 {
 
     function driveTankModeSingelSpeedGyroPidToTarget(speed: number, target: number, getCurrentValue: () => number): void {
         if (speed == 0) return;
-        newMotorMovement = false;
+        robotTankModeMovementChange = false;
 
         let lastUpdateTime = input.runningTime();
-        let Kp = 10; let Ki = 0.05; let Kd = 0.5;
+        let Kp = 3; let Ki = 0.05; let Kd = 0.5;
 
         let pidController = new MINTsparkMpu6050.PIDController();
         pidController.setGains(Kp, Ki, Kd);
@@ -132,7 +132,7 @@ namespace ms_nezhaV2 {
         pidDriveTankDualSpeed(speedL / 2, speedR / 2);
 
         while (getCurrentValue() < target) {
-            if (newMotorMovement) break;
+            if (robotTankModeMovementChange) break;
 
             let updateTime = input.runningTime();
             let pidCorrection = pidController.compute(updateTime - lastUpdateTime, MINTsparkMpu6050.UpdateMPU6050().orientation.yaw);
@@ -142,7 +142,7 @@ namespace ms_nezhaV2 {
             speedR = Math.constrain(speed - pidCorrection, 0, 100);
 
             // Change motor speed
-            if (newMotorMovement) break;
+            if (robotTankModeMovementChange) break;
             pidDriveTankDualSpeed(speedL, speedR);
 
             basic.pause(10);
@@ -151,7 +151,7 @@ namespace ms_nezhaV2 {
         stopTank();
     }
 
-    //% subcategory="Robot Tank Drive"
+    //% subcategory="Gyro Tank Drive"
     //% group="Gyro Movement"
     //% block="Gyro spot-turn %turn for angle %angle || with speed %speed"
     //% expandableArgumentMode="toggle"
@@ -160,7 +160,7 @@ namespace ms_nezhaV2 {
     //% weight=20
     //% color=#6e31c4
     export function turnTankModeGyro(turn: TurnDirection, angle: number, speed?: number): void {
-        newMotorMovement = true;
+        robotTankModeMovementChange = true;
 
         if (speed == null) {
             speed = 15;
@@ -182,7 +182,7 @@ namespace ms_nezhaV2 {
         let previousHeading = startHeading;
         let totalChange = 0;
 
-        driveTankDualSpeed(tmLSpeed, tmRSpeed);
+        pidDriveTankDualSpeed(tmLSpeed, tmRSpeed);
         basic.pause(200);
 
         while (input.runningTime() - startTime < 5000) {

@@ -1,4 +1,6 @@
-//% weight=100 color=#DC22E1 block="MINTspark NeZha V2" blockId="MINTspark NeZha V2" icon="\uf0e7"
+//% weight=100 color=#DC22E1 block="MINTspark NeZha V2" blockId="MINTspark NeZha V2" icon="\uf0e7" //% weight=20
+//% subcategories='["Motor / Servo", "Robot Tank Drive"]'
+//% groups='["Motor Functions", "Servo Functions", "Information", "Setup", "Movement", "Movement MPU6050"]'
 namespace ms_nezhaV2 {
     /*
      * NeZha V2

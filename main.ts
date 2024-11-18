@@ -5,9 +5,9 @@ namespace ms_nezhaV2 {
      */
     let MPU6050Initialised = false;
 
-    //% weight=30
+    //% weight=10
     //% block="Gyro drive %direction speed %speed"
-    //% subcategory="Robot Tank Drive MPU6050"
+    //% subcategory="Robot Tank Drive"
     //% group="Movement MPU6050"
     //% speed.min=1 speed.max=100
     //% color=#6e31c4
@@ -29,9 +29,9 @@ namespace ms_nezhaV2 {
         })
     }
 
-    //% weight=25
+    //% weight=9
     //% block="Gyro drive %direction speed %speed for %value %mode"
-    //% subcategory="Robot Tank Drive MPU6050"
+    //% subcategory="Robot Tank Drive"
     //% group="Movement MPU6050"
     //% speed.min=1 speed.max=100
     //% expandableArgumentMode="toggle"
@@ -71,9 +71,9 @@ namespace ms_nezhaV2 {
     }
 
 
-    //% weight=24
+    //% weight=8
     //% block="Gyro drive %direction speed %speed for %distance %distanceUnit"
-    //% subcategory="Robot Tank Drive MPU6050"
+    //% subcategory="Robot Tank Drive"
     //% group="Movement MPU6050"
     //% speed.min=1 speed.max=100
     //% expandableArgumentMode="toggle"
@@ -151,13 +151,13 @@ namespace ms_nezhaV2 {
         stopTank();
     }
 
-    //% subcategory="Robot Tank Drive MPU6050"
+    //% subcategory="Robot Tank Drive"
     //% group="Movement MPU6050"
     //% block="Gyro spot-turn %turn for angle %angle || with speed %speed"
     //% expandableArgumentMode="toggle"
     //% inlineInputMode=inline
     //% speed.min=10 speed.max=100 speed.defl=25 angle.min=1 angle.max=200 angle.defl=90
-    //% weight=20
+    //% weight=7
     //% color=#6e31c4
     export function turnTankModeGyro(turn: TurnDirection, angle: number, speed?: number): void {
         robotTankModeMovementChange = true;

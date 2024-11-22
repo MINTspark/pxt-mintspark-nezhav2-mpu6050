@@ -123,7 +123,6 @@ namespace ms_nezhaV2 {
 
         let lastUpdateTime = input.runningTime();
         let Kp = 3; let Ki = 0.05; let Kd = 0.5;
-
         let pidController = new MINTsparkMpu6050.PIDController();
         pidController.setGains(Kp, Ki, Kd);
         pidController.setPoint(MINTsparkMpu6050.UpdateMPU6050().orientation.yaw);

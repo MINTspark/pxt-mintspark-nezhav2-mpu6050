@@ -51,7 +51,7 @@ namespace ms_nezhaV2 {
         let target = 0;
         let getCurrentValue: () => number;
         let startTime = input.runningTime();
-        let startDegrees = readServoAbsolutePostionAggregate(tankMotorLeft)
+        let startDegrees = readServoAbsolutePositionAggregate(tankMotorLeft)
 
         switch (mode) {
             case MotorMovementMode.Seconds:
@@ -60,11 +60,11 @@ namespace ms_nezhaV2 {
                 break;
             case MotorMovementMode.Degrees:
                 target = value;
-                getCurrentValue = () => Math.abs(readServoAbsolutePostionAggregate(tankMotorLeft) - startDegrees);
+                getCurrentValue = () => Math.abs(readServoAbsolutePositionAggregate(tankMotorLeft) - startDegrees);
                 break;
             case MotorMovementMode.Turns:
                 target = value * 360;
-                getCurrentValue = () => Math.abs(readServoAbsolutePostionAggregate(tankMotorLeft) - startDegrees);
+                getCurrentValue = () => Math.abs(readServoAbsolutePositionAggregate(tankMotorLeft) - startDegrees);
                 break;
         }
 
@@ -93,8 +93,8 @@ namespace ms_nezhaV2 {
         // Calculate required degrees for distance
         let distMm = (distanceUnit == DistanceUnint.Cm) ? distance * 10 : distance * 10 * 2.54;
         let target = distMm * wheelLinearDegreePerMm;
-        let startDegrees = readServoAbsolutePostionAggregate(tankMotorLeft)
-        let getCurrentValue = () => Math.abs(readServoAbsolutePostionAggregate(tankMotorLeft) - startDegrees);
+        let startDegrees = readServoAbsolutePositionAggregate(tankMotorLeft)
+        let getCurrentValue = () => Math.abs(readServoAbsolutePositionAggregate(tankMotorLeft) - startDegrees);
 
         // Drive with PID Control
         driveTankModeSingelSpeedGyroPidToTarget(speed, target, getCurrentValue);

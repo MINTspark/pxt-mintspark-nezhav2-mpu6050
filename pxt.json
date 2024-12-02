@@ -6,8 +6,8 @@
         "core": "*",
         "radio": "*",
         "microphone": "*",
-        "pxt-mintspark-mpu6050": "github:mpoelzl/pxt-mintspark-mpu6050#v1.1.2",
-        "pxt-mintspark-nezhav2": "github:mpoelzl/pxt-mintspark-nezhav2#v2.0.0"
+        "pxt-mintspark-nezhav2": "github:MINTspark/pxt-mintspark-nezhav2#v2.0.1",
+        "pxt-mintspark-mpu6050": "github:MINTspark/pxt-mintspark-mpu6050#v1.1.3"
     },
     "files": [
         "main.ts",

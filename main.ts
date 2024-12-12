@@ -6,6 +6,8 @@ namespace ms_nezhaV2 {
      * NeZha V2
      */
     let MPU6050Initialised = false;
+    let currentSpeedL = 0;
+    let currentSpeedR = 0;
 
     //% weight=10
     //% block="Gyro drive %direction speed %speed"
@@ -108,9 +110,9 @@ namespace ms_nezhaV2 {
 
     function setupAndCalibrateMPU6050() : boolean{
         // Setup IMU
-        if (!MPU6050Initialised) {
+        //if (!MPU6050Initialised) {
             MPU6050Initialised = MINTsparkMpu6050.InitMPU6050(0);
-        }
+        //}
 
         // Calibrate
         if (MPU6050Initialised)
@@ -130,13 +132,15 @@ namespace ms_nezhaV2 {
         let lastUpdateTime = input.runningTime();
         let Kp = 3; let Ki = 0.05; let Kd = 0.5;
         let pidController = new MINTsparkMpu6050.PIDController();
-        pidController.setPoint(MINTsparkMpu6050.UpdateMPU6050().orientation.yaw);
+        let startYaw = MINTsparkMpu6050.UpdateMPU6050().orientation.yaw;
+        pidController.setPoint(startYaw);
+        basic.showNumber(startYaw);
         let speedL = speed;
         let speedR = speed;
 
         // Start movement
-        pidDriveTankDualSpeed(speedL / 2, speedR / 2);
-
+        pidDriveTankDualSpeed(speedL, speedR, 500)
+        
         while (getCurrentValue() < target) {
             if (robotTankModeMovementChange) break;
 
@@ -212,10 +216,60 @@ namespace ms_nezhaV2 {
         pidDriveTankDualSpeed(0, 0);
     }
 
-    function pidDriveTankDualSpeed(speedLeft: number, speedRight: number): void {
+    function pidDriveTankDualSpeed(speedLeft: number, speedRight: number, rampTimeMs: number = 0): void {
         let tmLSpeed = tankMotorLeftReversed ? -speedLeft : speedLeft;
         let tmRSpeed = tankMotorRightReversed ? -speedRight : speedRight;
-        runMotor(tankMotorLeft, tmLSpeed);
-        runMotor(tankMotorRight, tmRSpeed);
+
+        // Ramp speed if required
+        if (rampTimeMs > 0)
+        {
+            rampSpeed(tmLSpeed, tmRSpeed, rampTimeMs)
+        }
+        else
+        {
+            runMotor(tankMotorLeft, tmLSpeed);
+            runMotor(tankMotorRight, tmRSpeed);
+        }
+
+        currentSpeedL = tmLSpeed;
+        currentSpeedR = tmRSpeed;
+    }
+
+    function rampSpeed(speedL: number, speedR: number, rampTimeMs: number)
+    {
+        let startTime = input.runningTime();
+        let endTime = startTime + rampTimeMs;
+        let rangeL = speedL - currentSpeedL;
+        let rangeR = speedR - currentSpeedR;
+        let upperBoundaryL = Math.abs(rangeL);
+        let upperBoundaryR = Math.abs(rangeR);
+        let counter = 0;
+
+        while (input.runningTime() < endTime)
+        {
+            basic.pause(50);
+            let timeNow = input.runningTime();
+            let offsetL = Math.map(timeNow, startTime, endTime, 0, upperBoundaryL);
+            let offsetR = Math.map(timeNow, startTime, endTime, 0, upperBoundaryR);
+
+            offsetL = rangeL < 0 ? -offsetL : offsetL;
+            offsetR = rangeR < 0 ? -offsetR : offsetR;
+
+            if (counter % 2 == 0)
+            {
+                runMotor(tankMotorLeft, currentSpeedL + offsetL);
+                runMotor(tankMotorRight, currentSpeedR + offsetR);
+            }
+            else
+            {
+                runMotor(tankMotorRight, currentSpeedR + offsetR);
+                runMotor(tankMotorLeft, currentSpeedL + offsetL);
+            }
+            
+            counter++;
+        }
+
+        runMotor(tankMotorLeft, speedL);
+        runMotor(tankMotorRight, speedR);
     }
 }

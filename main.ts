@@ -9,6 +9,14 @@ namespace ms_nezhaV2 {
     let currentSpeedL = 0;
     let currentSpeedR = 0;
 
+    function setSpeed(direction: LinearDirection, speed: number):number
+    {
+        speed = Math.abs(speed);
+        speed = speed > 80 ? 80 : speed;
+        speed = (direction == LinearDirection.Forward) ? speed : -speed;
+        return speed;
+    }
+
     //% weight=10
     //% block="Gyro drive %direction speed %speed"
     //% subcategory="Robot Tank Drive"
@@ -17,8 +25,7 @@ namespace ms_nezhaV2 {
     //% color=#6e31c4
     //% inlineInputMode=inline
     export function driveTankModeSingleSpeedGyro(direction: LinearDirection, speed: number): void {
-        speed = Math.abs(speed);
-        speed = (direction == LinearDirection.Forward) ? speed : -speed;
+        speed = setSpeed(direction, speed);
 
         // Setup IMU, exit if not initialised
         if (!setupAndCalibrateMPU6050()) {
@@ -42,12 +49,7 @@ namespace ms_nezhaV2 {
     //% color=#6e31c4
     //% inlineInputMode=inline
     export function driveTankModeSingleSpeedGyroFor(direction: LinearDirection, speed: number, value: number, mode: MotorMovementMode): void {
-        speed = Math.abs(speed);
-
-        if (direction == LinearDirection.Backward)
-        {
-            speed = -speed;
-        }
+        speed = setSpeed(direction, speed);
 
         // Setup IMU, exit if not initialised
         if (!setupAndCalibrateMPU6050()) {
@@ -88,10 +90,7 @@ namespace ms_nezhaV2 {
     //% color=#6e31c4
     //% inlineInputMode=inline
     export function driveTankModeSingleSpeedGyroForDistance(direction: LinearDirection, speed: number, distance: number, distanceUnit: DistanceUnint): void {
-        speed = Math.abs(speed);
-        if (direction == LinearDirection.Backward) {
-            speed = -speed;
-        }
+        speed = setSpeed(direction, speed);
 
         // Setup IMU, exit if not initialised
         if (!setupAndCalibrateMPU6050()) {
@@ -170,8 +169,8 @@ namespace ms_nezhaV2 {
     export function turnTankModeGyro(turn: TurnDirection, angle: number, speed?: number): void {
         robotTankModeMovementChange = true;
 
-        if (speed == null) {
-            speed = 15;
+        if (speed < 20) {
+            speed = 20;
         }
 
         let tmLSpeed = speed;

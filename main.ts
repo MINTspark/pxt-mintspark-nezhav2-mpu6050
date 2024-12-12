@@ -110,9 +110,9 @@ namespace ms_nezhaV2 {
 
     function setupAndCalibrateMPU6050() : boolean{
         // Setup IMU
-        //if (!MPU6050Initialised) {
+        if (!MPU6050Initialised) {
             MPU6050Initialised = MINTsparkMpu6050.InitMPU6050(0);
-        //}
+        }
 
         // Calibrate
         if (MPU6050Initialised)

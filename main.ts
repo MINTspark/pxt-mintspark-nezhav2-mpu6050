@@ -132,9 +132,7 @@ namespace ms_nezhaV2 {
         let lastUpdateTime = input.runningTime();
         let Kp = 3; let Ki = 0.05; let Kd = 0.5;
         let pidController = new MINTsparkMpu6050.PIDController();
-        let startYaw = MINTsparkMpu6050.UpdateMPU6050().orientation.yaw;
-        pidController.setPoint(startYaw);
-        basic.showNumber(startYaw);
+        pidController.setPoint(MINTsparkMpu6050.UpdateMPU6050().orientation.yaw);
         let speedL = speed;
         let speedR = speed;
 
@@ -237,6 +235,14 @@ namespace ms_nezhaV2 {
 
     function rampSpeed(speedL: number, speedR: number, rampTimeMs: number)
     {
+        if (currentSpeedL == 0 && currentSpeedR == 0)
+        {
+            currentSpeedL = Math.round(speedL * 0.2);
+            currentSpeedR = Math.round(speedR * 0.2);
+            runMotor(tankMotorRight, currentSpeedR);
+            runMotor(tankMotorLeft, currentSpeedL);
+        }
+
         let startTime = input.runningTime();
         let endTime = startTime + rampTimeMs;
         let rangeL = speedL - currentSpeedL;

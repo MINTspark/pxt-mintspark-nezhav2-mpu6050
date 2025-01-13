@@ -6,7 +6,7 @@
         "core": "*",
         "radio": "*",
         "microphone": "*",
-        "pxt-mintspark-nezhav2": "github:mintspark/pxt-mintspark-nezhav2#v2.0.2",
+        "pxt-mintspark-nezhav2": "github:mintspark/pxt-mintspark-nezhav2#v2.0.3",
         "pxt-mintspark-mpu6050": "github:mintspark/pxt-mintspark-mpu6050#v1.1.4"
     },
     "files": [

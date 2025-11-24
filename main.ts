@@ -136,7 +136,7 @@ namespace ms_nezhaV2 {
         let speedR = speed;
 
         // Start movement
-        pidDriveTankDualSpeed(speedL, speedR, 0)
+        pidDriveTankDualSpeed(speedL, speedR, 200)
         
         while (getCurrentValue() < target) {
             if (robotTankModeMovementChange) break;
